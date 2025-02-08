@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import { RootStackParamList } from '../types/type';
+import PhotoMotion from '../navigation/photoMotion';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OnboardLacLoc'>;
 
@@ -25,8 +26,9 @@ const OnboardLacLoc: React.FC<Props> = ({ navigation }) => {
                 </TouchableOpacity>
                 <Text style={styles.huongDan}>HƯỚNG DẪN</Text>
             </View>
-            <Image source={require('../assets/img-laclocvang.png')} />
-            <Image style={{ width: 40, height: 20, resizeMode: 'contain', bottom: '5%' }} source={require('../assets/tranfer.png')} />
+            {/* <Image source={require('../assets/img-laclocvang.png')} /> */}
+            <PhotoMotion />
+            {/* <Image style={{ width: 40, height: 20, resizeMode: 'contain', bottom: '5%' }} source={require('../assets/tranfer.png')} /> */}
             <View style={styles.group}>
                 <Image style={{ position: 'absolute' }} source={require('../assets/nen.png')} />
                 <Text style={styles.textNen}>
