@@ -1,26 +1,41 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useFonts } from 'expo-font';
+import AppLoading from 'expo-app-loading';
+import { RootStackParamList } from '../types/type';
 
+type Props = NativeStackScreenProps<RootStackParamList, 'OnboardLacLoc'>;
 
-const OnboardLacLoc: React.FC = () => {
+const OnboardLacLoc: React.FC<Props> = ({ navigation }) => {
+    const [fontsLoaded] = useFonts({
+        'SVN-Cookies': require('../assets/fonts/SVN-Cookies.ttf'),
+    });
+
+    if (!fontsLoaded) {
+        return <AppLoading />;
+    }
 
     return (
         <View style={styles.container}>
             <Image style={styles.image} source={require('../assets/bacground.png')} />
             <View style={styles.header}>
-                <TouchableOpacity style={{ right: '10%' }}><Image source={require('../assets/back.png')} /></TouchableOpacity>
-                <Image style={styles.img2} source={require('../assets/huongdan.png')} />
+                <TouchableOpacity style={{ right: '10%' }}>
+                    <Image source={require('../assets/back.png')} />
+                </TouchableOpacity>
+                <Text style={styles.huongDan}>HƯỚNG DẪN</Text>
             </View>
             <Image source={require('../assets/img-laclocvang.png')} />
             <Image style={{ width: 40, height: 20, resizeMode: 'contain', bottom: '5%' }} source={require('../assets/tranfer.png')} />
             <View style={styles.group}>
                 <Image style={{ position: 'absolute' }} source={require('../assets/nen.png')} />
-                <Text style={styles.textNen}>Lắc chắt chiu từng lượt
+                <Text style={styles.textNen}>
+                    Lắc chắt chiu từng lượt
                     Nhận ngay 1 phần quà
 
                     Lắc tới bến chục lượt
-                    Nhận một lúc 10 phần quà!</Text>
+                    Nhận một lúc 10 phần quà!
+                </Text>
             </View>
             <Image style={styles.btn2} source={require('../assets/btn2.png')} />
         </View>
@@ -42,11 +57,8 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         zIndex: 0,
     },
-    img2: {
-
-    },
     btn2: {
-        top: '7%'
+        top: '7%',
     },
     textNen: {
         color: '#FFF',
@@ -54,7 +66,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         lineHeight: 19,
         width: 230,
-        textAlign: 'center'
+        textAlign: 'center',
     },
     header: {
         flexDirection: 'row',
@@ -64,7 +76,14 @@ const styles = StyleSheet.create({
     group: {
         justifyContent: 'center',
         alignItems: 'center',
-
+    },
+    huongDan: {
+        fontSize: 24,
+        lineHeight: 33,
+        fontWeight: '400',
+        textAlign: 'center',
+        fontFamily: 'SVN-Cookies',
+        color: '#C2030B',
     },
 });
 

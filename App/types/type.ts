@@ -1,4 +1,4 @@
-// export type RootStackParamList = {
-//     NotifyWebcome: undefined;
-//     OnboardLacLoc: undefined;
-// };
+export type RootStackParamList = {
+    Splash: undefined;
+    OnboardLacLoc: undefined;
+};
