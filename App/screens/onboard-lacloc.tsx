@@ -26,9 +26,7 @@ const OnboardLacLoc: React.FC<Props> = ({ navigation }) => {
                 </TouchableOpacity>
                 <Text style={styles.huongDan}>HƯỚNG DẪN</Text>
             </View>
-            {/* <Image source={require('../assets/img-laclocvang.png')} /> */}
             <PhotoMotion />
-            {/* <Image style={{ width: 40, height: 20, resizeMode: 'contain', bottom: '5%' }} source={require('../assets/tranfer.png')} /> */}
             <View style={styles.group}>
                 <Image style={{ position: 'absolute' }} source={require('../assets/nen.png')} />
                 <Text style={styles.textNen}>
@@ -39,7 +37,9 @@ const OnboardLacLoc: React.FC<Props> = ({ navigation }) => {
                     Nhận một lúc 10 phần quà!
                 </Text>
             </View>
-            <Image style={styles.btn2} source={require('../assets/btn2.png')} />
+            <TouchableOpacity onPress={() => navigation.navigate('TrangLac')} style={styles.btn2}>
+                <Image source={require('../assets/btn2.png')} />
+            </TouchableOpacity>
         </View>
     );
 };
