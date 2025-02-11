@@ -11,31 +11,42 @@ import {
     Pressable,
 } from 'react-native';
 import BottomBar from '../components/bottom-bar';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/type';
 
-const TrangLac: React.FC = () => {
-    const [count, setCount] = useState(20);
+type Props = NativeStackScreenProps<RootStackParamList, 'TrangLac'>;
+
+const TrangLac: React.FC<Props> = ({ navigation, route }) => {
+    const [count, setCount] = useState(65);
     const [showPopup, setShowPopup] = useState(false);
-    const [luckyCode, setLuckyCode] = useState('');
-    const [reward, setReward] = useState('');
+    const [rewards, setRewards] = useState<string[]>([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     // Hàm xử lý khi nhấn nút lắc
     const handlePress = (num: number) => {
         if (count >= num) {
-            // Tạo mã số may mắn ngẫu nhiên
-            const newLuckyCode = `MBAT ${Math.floor(100000 + Math.random() * 900000)}`;
-            setLuckyCode(newLuckyCode);
-            setReward('1 Chỉ vàng PNJ 9.999'); // Phần thưởng cố định (có thể thay đổi)
+            const newRewards: string[] = Array.from({ length: num }, () =>
+                `MBAT ${Math.floor(100000 + Math.random() * 900000)}`
+            ); // Tạo danh sách mã số may mắn
 
-            setTimeout(() => {
-                Vibration.vibrate(500); // Rung trong 500ms
-                setShowPopup(true); // Hiển thị popup
-            }, 500);
-
+            setRewards(newRewards); // Cập nhật danh sách phần thưởng
+            setShowPopup(true); // Hiển thị popup
+            setCurrentIndex(0); // Đặt phần thưởng đầu tiên
             setCount(count - num); // Giảm số lượt lắc
+
+            Vibration.vibrate(500); // Rung khi lắc
         } else {
             Alert.alert("Hết lượt lắc!", "Bạn không thể lắc thêm.");
         }
     };
+
+    const renderRewardItem = ({ item, index }: { item: string; index: number }) => (
+        <View style={styles.rewardContainer}>
+            <Text style={styles.popupReward}>1 Chỉ vàng PNJ 9.999</Text>
+            <Text style={styles.popupCode}>{item}</Text>
+            <Text style={styles.popupCount}>{index + 1}/{rewards.length}</Text>
+        </View>
+    );
 
     return (
         <View style={styles.container}>
@@ -62,11 +73,40 @@ const TrangLac: React.FC = () => {
                 <View style={styles.popupOverlay}>
                     <View style={styles.popup}>
                         <Text style={styles.popupTitle}>LỘC TỚI NGẬP TRÀN</Text>
-                        <Text style={styles.popupReward}>{reward}</Text>
-                        <Text style={styles.popupCode}>{luckyCode}</Text>
-                        <Text style={styles.popupCount}>1/{count + 1}</Text>
+
+                        {/* Hiển thị phần thưởng hiện tại */}
+                        {rewards.length > 0 && (
+                            <View style={styles.rewardContainer}>
+                                <Image source={require('../assets/img-lac1.png')} />
+                                <Text style={styles.popupReward}>1 Chỉ vàng PNJ 9.999</Text>
+                                <Text style={styles.popupCode}>{rewards[currentIndex]}</Text>
+                                <Text style={styles.popupCount}>
+                                    {currentIndex + 1}/{rewards.length}
+                                </Text>
+                            </View>
+                        )}
+
+                        {/* Nút lùi & tiến */}
+                        <View style={styles.navButtons}>
+                            <TouchableOpacity
+                                onPress={() => setCurrentIndex((prev) => Math.max(prev - 1, 0))}
+                                style={[styles.navButton, currentIndex === 0 && styles.disabledButton]}
+                                disabled={currentIndex === 0}
+                            >
+                                <Text style={styles.navButtonText}>◀ Lùi</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                onPress={() => setCurrentIndex((prev) => Math.min(prev + 1, rewards.length - 1))}
+                                style={[styles.navButton, currentIndex === rewards.length - 1 && styles.disabledButton]}
+                                disabled={currentIndex === rewards.length - 1}
+                            >
+                                <Text style={styles.navButtonText}>Tiến ▶</Text>
+                            </TouchableOpacity>
+                        </View>
+
                         <Text style={styles.popupMessage}>
-                            Chúc mừng thánh lắc, rinh lộc mắt tay anh em ơi! Tích cực săn thêm lượt lắc thôi nào!
+                            Chúc mừng thánh lắc, rinh lộc mắt tay anh em ơi!
                         </Text>
                         <Pressable
                             style={styles.buttonClose}
@@ -78,7 +118,8 @@ const TrangLac: React.FC = () => {
                 </View>
             </Modal>
 
-            <BottomBar />
+
+            <BottomBar navigation={navigation} route={route} />
         </View>
     );
 };
@@ -129,6 +170,10 @@ const styles = StyleSheet.create({
         color: '#E63B2E',
         marginBottom: 8,
     },
+    rewardContainer: {
+        width: 280,
+        alignItems: 'center',
+    },
     popupReward: {
         fontSize: 16,
         color: '#E0633A',
@@ -161,6 +206,26 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
     },
+    navButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        marginVertical: 10,
+    },
+    navButton: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        backgroundColor: '#E63B2E',
+        borderRadius: 8,
+    },
+    navButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
+    disabledButton: {
+        backgroundColor: '#ccc',
+    },
+
 });
 
 export default TrangLac;

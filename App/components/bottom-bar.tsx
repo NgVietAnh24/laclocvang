@@ -2,12 +2,17 @@ import AppLoading from "expo-app-loading";
 import { useFonts } from "expo-font";
 import React, { useState } from "react";
 import { View, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { RootStackParamList } from "../types/type";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-const BottomBar: React.FC = () => {
+type Props = NativeStackScreenProps<RootStackParamList, keyof RootStackParamList>;
+
+const BottomBar: React.FC<Props> = ({ navigation }) => {
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-    const handlePress = (index: number) => {
+    const handlePress = (index: number, screen: keyof RootStackParamList) => {
         setSelectedIndex(index);
+        navigation.navigate(screen);
     };
 
     const [fontsLoaded] = useFonts({
@@ -22,28 +27,28 @@ const BottomBar: React.FC = () => {
         <View style={styles.container}>
             <TouchableOpacity
                 style={[styles.btnBar, selectedIndex === 0 && styles.selectedButton]}
-                onPress={() => handlePress(0)}
+                onPress={() => handlePress(0, "TrangLac")}
             >
                 <Image source={require('../assets/phone.png')} style={styles.icon} />
                 <Text style={styles.label}>Lắc Lộc Vàng</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={[styles.btnBar, selectedIndex === 1 && styles.selectedButton1]}
-                onPress={() => handlePress(1)}
+                onPress={() => handlePress(1, 'TrangLac')}
             >
                 <Image source={require('../assets/lixi.png')} style={styles.icon} />
                 <Text style={styles.label}>Lì Xì Vàng</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={[styles.btnBar, selectedIndex === 2 && styles.selectedButton2]}
-                onPress={() => handlePress(2)}
+                onPress={() => handlePress(2, "TrangLac")}
             >
                 <Image source={require('../assets/kho-loc.png')} style={styles.icon} />
                 <Text style={styles.label}>Kho Lộc</Text>
             </TouchableOpacity>
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -65,9 +70,11 @@ const styles = StyleSheet.create({
     selectedButton: {
         backgroundColor: '#FFD233',
         borderTopLeftRadius: 12,
-    }, selectedButton1: {
+    },
+    selectedButton1: {
         backgroundColor: '#FFD233',
-    }, selectedButton2: {
+    },
+    selectedButton2: {
         borderTopRightRadius: 12,
         backgroundColor: '#FFD233',
     },
