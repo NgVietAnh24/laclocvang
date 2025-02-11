@@ -1,6 +1,6 @@
 import AppLoading from "expo-app-loading";
 import { useFonts } from "expo-font";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { RootStackParamList } from "../types/type";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -8,20 +8,16 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 type Props = NativeStackScreenProps<RootStackParamList, keyof RootStackParamList>;
 
 const BottomBar: React.FC<Props> = ({ navigation }) => {
-    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const [selectedIndex, setSelectedIndex] = useState<number>(1); // Mặc định là "Lì Xì Vàng"
+
+    useEffect(() => {
+        navigation.navigate("TrangLac"); // Điều hướng mặc định
+    }, []);
 
     const handlePress = (index: number, screen: keyof RootStackParamList) => {
         setSelectedIndex(index);
         navigation.navigate(screen);
     };
-
-    const [fontsLoaded] = useFonts({
-        'SVN-Cookies': require('../assets/fonts/SVN-Cookies.ttf'),
-    });
-
-    if (!fontsLoaded) {
-        return <AppLoading />;
-    }
 
     return (
         <View style={styles.container}>

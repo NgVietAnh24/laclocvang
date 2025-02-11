@@ -18,6 +18,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'TrangLac'>;
 
 const TrangLac: React.FC<Props> = ({ navigation, route }) => {
     const [count, setCount] = useState(65);
+    const [receive, setReceive] = useState(true);
     const [showPopup, setShowPopup] = useState(false);
     const [rewards, setRewards] = useState<string[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -64,6 +65,7 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
             </View>
 
             {/* Popup hiển thị kết quả */}
+
             <Modal
                 visible={showPopup}
                 transparent
@@ -71,49 +73,83 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
                 onRequestClose={() => setShowPopup(false)}
             >
                 <View style={styles.popupOverlay}>
-                    <View style={styles.popup}>
-                        <Text style={styles.popupTitle}>LỘC TỚI NGẬP TRÀN</Text>
+                    {currentIndex + 1 != rewards.length ?
+                        <Image style={styles.imgLac} source={require('../assets/img-lac10.png')} />
+                        :
+                        <Image style={styles.imgLac1} source={require('../assets/img-lac1.png')} />
+                    }
 
+                    <Pressable
+                        style={styles.buttonClose}
+                        onPress={() => setShowPopup(false)}
+                    >
+                        <Image source={require('../assets/exit.png')} />
+                    </Pressable>
+                    <View style={styles.popup}>
                         {/* Hiển thị phần thưởng hiện tại */}
+
                         {rewards.length > 0 && (
                             <View style={styles.rewardContainer}>
-                                <Image source={require('../assets/img-lac1.png')} />
+                                { }
+                                <Text style={styles.popupTitle}>LỘC TỚI NGẬP TRÀN</Text>
                                 <Text style={styles.popupReward}>1 Chỉ vàng PNJ 9.999</Text>
-                                <Text style={styles.popupCode}>{rewards[currentIndex]}</Text>
-                                <Text style={styles.popupCount}>
-                                    {currentIndex + 1}/{rewards.length}
-                                </Text>
+                                <Text style={styles.popupReward}>1 số may mắn</Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Image source={require('../assets/vang.png')} />
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Image style={styles.somayman} source={require('../assets/somayman.png')} />
+                                        <Text style={styles.popupCode}>{rewards[currentIndex]}</Text>
+                                    </View>
+
+                                </View>
+                                {currentIndex + 1 != rewards.length &&
+                                    <Text style={styles.popupCount}>
+                                        {currentIndex + 1}/{rewards.length}
+                                    </Text>
+                                }
                             </View>
                         )}
 
                         {/* Nút lùi & tiến */}
-                        <View style={styles.navButtons}>
-                            <TouchableOpacity
-                                onPress={() => setCurrentIndex((prev) => Math.max(prev - 1, 0))}
-                                style={[styles.navButton, currentIndex === 0 && styles.disabledButton]}
-                                disabled={currentIndex === 0}
-                            >
-                                <Text style={styles.navButtonText}>◀ Lùi</Text>
-                            </TouchableOpacity>
+                        {currentIndex + 1 != rewards.length &&
+                            <View style={styles.navButtons}>
+                                <TouchableOpacity
+                                    onPress={() => setCurrentIndex((prev) => Math.max(prev - 1, 0))}
+                                    style={[styles.navButton, currentIndex === 0 && styles.disabledButton]}
+                                    disabled={currentIndex === 0}
+                                >
+                                    <Image style={styles.imgBtnPrev} source={require('../assets/prev.png')} />
+                                </TouchableOpacity>
 
-                            <TouchableOpacity
-                                onPress={() => setCurrentIndex((prev) => Math.min(prev + 1, rewards.length - 1))}
-                                style={[styles.navButton, currentIndex === rewards.length - 1 && styles.disabledButton]}
-                                disabled={currentIndex === rewards.length - 1}
-                            >
-                                <Text style={styles.navButtonText}>Tiến ▶</Text>
+                                <TouchableOpacity
+                                    onPress={() => setCurrentIndex((prev) => Math.min(prev + 1, rewards.length - 1))}
+                                    style={[styles.navButton, currentIndex === rewards.length - 1 && styles.disabledButton]}
+                                    disabled={currentIndex === rewards.length - 1}
+                                >
+                                    <Image style={styles.imgBtnNext} source={require('../assets/next.png')} />
+                                </TouchableOpacity>
+                            </View>
+                        }
+
+
+                        <Text style={styles.popupMessage}>
+                            Chúc mừng thánh lắc,{"\n"}
+                            rinh lộc mát tay anh em ơi!{"\n"}
+                            Tích cực săn thêm lượt lắc thôi nào!
+                        </Text>
+                        <View style={{ top: '130%', position: 'absolute' }}>
+                            <TouchableOpacity>
+                                <Image source={require('../assets/share.png')} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setReceive(false)} >
+                                {receive === true ?
+                                    <Image source={require('../assets/nhan-loc.png')} />
+                                    :
+                                    <Image source={require('../assets/da-nhan.png')} />
+                                }
                             </TouchableOpacity>
                         </View>
 
-                        <Text style={styles.popupMessage}>
-                            Chúc mừng thánh lắc, rinh lộc mắt tay anh em ơi!
-                        </Text>
-                        <Pressable
-                            style={styles.buttonClose}
-                            onPress={() => setShowPopup(false)}
-                        >
-                            <Text style={styles.buttonCloseText}>Đã nhận</Text>
-                        </Pressable>
                     </View>
                 </View>
             </Modal>
@@ -158,49 +194,55 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     popup: {
-        width: 300,
-        backgroundColor: 'white',
-        borderRadius: 16,
-        padding: 16,
         alignItems: 'center',
     },
     popupTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#E63B2E',
+        marginTop: '10%',
+        fontSize: 16,
+        fontWeight: '400',
+        color: '#FFE933',
         marginBottom: 8,
+        lineHeight: 20,
+        fontFamily: 'SVN-Cookies'
     },
     rewardContainer: {
         width: 280,
         alignItems: 'center',
     },
     popupReward: {
-        fontSize: 16,
-        color: '#E0633A',
+        fontSize: 14,
+        fontWeight: '700',
+        color: '#FFF',
+        lineHeight: 18,
         marginBottom: 4,
     },
     popupCode: {
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: 12,
+        fontWeight: '500',
         color: '#333',
+        lineHeight: 18,
         marginBottom: 4,
+        right: '-13%',
+        top: '30%',
     },
     popupCount: {
-        fontSize: 14,
-        color: '#888',
-        marginBottom: 12,
+        fontSize: 12,
+        color: '#FFE933',
+        fontWeight: '700',
+        top: '25%',
     },
     popupMessage: {
-        fontSize: 14,
+        fontSize: 12,
+        fontWeight: '700',
         textAlign: 'center',
-        color: '#444',
+        color: '#FFF',
+        width: 217,
         marginBottom: 16,
     },
     buttonClose: {
-        backgroundColor: '#E63B2E',
-        borderRadius: 8,
-        paddingVertical: 10,
-        paddingHorizontal: 16,
+        position: 'absolute',
+        bottom: '85%',
+        left: '80%',
     },
     buttonCloseText: {
         color: 'white',
@@ -208,24 +250,38 @@ const styles = StyleSheet.create({
     },
     navButtons: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         width: '100%',
-        marginVertical: 10,
+        padding: 10
     },
     navButton: {
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        backgroundColor: '#E63B2E',
-        borderRadius: 8,
+        paddingVertical: 10,
+        paddingHorizontal: 40,
     },
     navButtonText: {
         color: 'white',
         fontWeight: 'bold',
     },
     disabledButton: {
-        backgroundColor: '#ccc',
+        // backgroundColor: '#ccc',
     },
-
+    imgLac: {
+        position: 'absolute',
+        bottom: '20%',
+    },
+    somayman: {
+        position: 'absolute'
+    },
+    imgBtnPrev: {
+        width: 28,
+        height: 28,
+    },
+    imgBtnNext: {
+        width: 34,
+        height: 34,
+    },
+    imgLac1: {
+        position: 'absolute'
+    },
 });
 
 export default TrangLac;
