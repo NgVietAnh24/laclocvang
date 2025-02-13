@@ -8,7 +8,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 type Props = NativeStackScreenProps<RootStackParamList, keyof RootStackParamList>;
 
 const BottomBar: React.FC<Props> = ({ navigation }) => {
-    const [selectedIndex, setSelectedIndex] = useState<number>(1); // Mặc định là "Lì Xì Vàng"
+    const [selectedIndex, setSelectedIndex] = useState<number>(0); // Mặc định là "Lì Xì Vàng"
 
     useEffect(() => {
         navigation.navigate("TrangLac"); // Điều hướng mặc định

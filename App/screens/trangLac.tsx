@@ -17,14 +17,23 @@ import { RootStackParamList } from '../types/type';
 type Props = NativeStackScreenProps<RootStackParamList, 'TrangLac'>;
 
 const TrangLac: React.FC<Props> = ({ navigation, route }) => {
-    const [count, setCount] = useState(65);
+
+    const images = [
+        require('../assets/vang.png'),
+        require('../assets/nua-chi.png'),
+    ];
+
+    const [count, setCount] = useState(60);
     const [receive, setReceive] = useState(true);
     const [showPopup, setShowPopup] = useState(false);
     const [rewards, setRewards] = useState<string[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [randomImage, setRandomImage] = useState(images[0]);
 
     // Hàm xử lý khi nhấn nút lắc
     const handlePress = (num: number) => {
+        const randomIndex = Math.floor(Math.random() * images.length);
+        setRandomImage(images[randomIndex]);
         if (count >= num) {
             const newRewards: string[] = Array.from({ length: num }, () =>
                 `MBAT ${Math.floor(100000 + Math.random() * 900000)}`
@@ -73,7 +82,7 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
                 onRequestClose={() => setShowPopup(false)}
             >
                 <View style={styles.popupOverlay}>
-                    {currentIndex + 1 != rewards.length ?
+                    {rewards.length != 1 ?
                         <Image style={styles.imgLac} source={require('../assets/img-lac10.png')} />
                         :
                         <Image style={styles.imgLac1} source={require('../assets/img-lac1.png')} />
@@ -90,19 +99,35 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
 
                         {rewards.length > 0 && (
                             <View style={styles.rewardContainer}>
-                                { }
-                                <Text style={styles.popupTitle}>LỘC TỚI NGẬP TRÀN</Text>
-                                <Text style={styles.popupReward}>1 Chỉ vàng PNJ 9.999</Text>
-                                <Text style={styles.popupReward}>1 số may mắn</Text>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Image source={require('../assets/vang.png')} />
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <Image style={styles.somayman} source={require('../assets/somayman.png')} />
-                                        <Text style={styles.popupCode}>{rewards[currentIndex]}</Text>
-                                    </View>
+                                {rewards.length != 1 ?
+                                    <>
+                                        <Text style={styles.popupTitle}>LỘC TỚI NGẬP TRÀN</Text>
+                                        <Text style={styles.popupReward}>1 Chỉ vàng PNJ 9.999</Text>
+                                        <Text style={styles.popupReward}>1 số may mắn</Text>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Image source={randomImage} />
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Image style={styles.somayman} source={require('../assets/somayman.png')} />
+                                                <Text style={styles.popupCode}>{rewards[currentIndex]}</Text>
+                                            </View>
 
-                                </View>
-                                {currentIndex + 1 != rewards.length &&
+                                        </View>
+                                    </>
+                                    :
+                                    <>
+                                        <Text style={styles.popupReward1}>1 Chỉ vàng PNJ 9.999</Text>
+                                        <Text style={styles.popupReward1}>1 số may mắn</Text>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Image source={randomImage} />
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Image style={styles.somayman} source={require('../assets/somayman.png')} />
+                                                <Text style={styles.popupCode}>{rewards[currentIndex]}</Text>
+                                            </View>
+
+                                        </View>
+                                    </>
+                                }
+                                {rewards.length != 1 &&
                                     <Text style={styles.popupCount}>
                                         {currentIndex + 1}/{rewards.length}
                                     </Text>
@@ -111,32 +136,42 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
                         )}
 
                         {/* Nút lùi & tiến */}
-                        {currentIndex + 1 != rewards.length &&
-                            <View style={styles.navButtons}>
-                                <TouchableOpacity
-                                    onPress={() => setCurrentIndex((prev) => Math.max(prev - 1, 0))}
-                                    style={[styles.navButton, currentIndex === 0 && styles.disabledButton]}
-                                    disabled={currentIndex === 0}
-                                >
-                                    <Image style={styles.imgBtnPrev} source={require('../assets/prev.png')} />
-                                </TouchableOpacity>
+                        {rewards.length === 1 ?
+                            <>
+                                <View style={styles.navButtons}>
+                                </View><Text style={styles.popupMessage1}>
+                                    WOW, THÁNH LẮC VÀNG ĐÂY RỒI,{"\n"}
+                                    GIÀU TO RỒI ANH EM ƠI!
+                                </Text>
+                            </>
+                            :
+                            <>
+                                <View style={styles.navButtons}>
+                                    <TouchableOpacity
+                                        onPress={() => setCurrentIndex((prev) => Math.max(prev - 1, 0))}
+                                        style={[styles.navButton, currentIndex === 0 && styles.disabledButton]}
+                                        disabled={currentIndex === 0}
+                                    >
+                                        <Image style={styles.imgBtnPrev} source={require('../assets/prev.png')} />
+                                    </TouchableOpacity>
 
-                                <TouchableOpacity
-                                    onPress={() => setCurrentIndex((prev) => Math.min(prev + 1, rewards.length - 1))}
-                                    style={[styles.navButton, currentIndex === rewards.length - 1 && styles.disabledButton]}
-                                    disabled={currentIndex === rewards.length - 1}
-                                >
-                                    <Image style={styles.imgBtnNext} source={require('../assets/next.png')} />
-                                </TouchableOpacity>
-                            </View>
+                                    <TouchableOpacity
+                                        onPress={() => setCurrentIndex((prev) => Math.min(prev + 1, rewards.length - 1))}
+                                        style={[styles.navButton, currentIndex === rewards.length - 1 && styles.disabledButton]}
+                                        disabled={currentIndex === rewards.length - 1}
+                                    >
+                                        <Image style={styles.imgBtnNext} source={require('../assets/next.png')} />
+                                    </TouchableOpacity>
+                                </View><Text style={styles.popupMessage}>
+                                    Chúc mừng thánh lắc,{"\n"}
+                                    rinh lộc mát tay anh em ơi!{"\n"}
+                                    Tích cực săn thêm lượt lắc thôi nào!
+                                </Text>
+                            </>
+
                         }
 
 
-                        <Text style={styles.popupMessage}>
-                            Chúc mừng thánh lắc,{"\n"}
-                            rinh lộc mát tay anh em ơi!{"\n"}
-                            Tích cực săn thêm lượt lắc thôi nào!
-                        </Text>
                         <View style={{ top: '130%', position: 'absolute' }}>
                             <TouchableOpacity>
                                 <Image source={require('../assets/share.png')} />
@@ -216,6 +251,14 @@ const styles = StyleSheet.create({
         lineHeight: 18,
         marginBottom: 4,
     },
+    popupReward1: {
+        fontSize: 16,
+        fontWeight: '400',
+        color: '#C2030B',
+        fontFamily: 'SVN-Cookies',
+        lineHeight: 20,
+        marginBottom: 4,
+    },
     popupCode: {
         fontSize: 12,
         fontWeight: '500',
@@ -236,6 +279,17 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         textAlign: 'center',
         color: '#FFF',
+        width: 217,
+        marginBottom: 16,
+    },
+    popupMessage1: {
+        fontSize: 11,
+        fontWeight: '400',
+        textAlign: 'center',
+        color: '#C2030B',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 5,
+        textShadowColor: '#FFD600D9',
         width: 217,
         marginBottom: 16,
     },
@@ -280,7 +334,8 @@ const styles = StyleSheet.create({
         height: 34,
     },
     imgLac1: {
-        position: 'absolute'
+        position: 'absolute',
+        bottom: '35%',
     },
 });
 
