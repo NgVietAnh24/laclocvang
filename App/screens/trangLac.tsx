@@ -9,6 +9,7 @@ import {
     Vibration,
     Modal,
     Pressable,
+    ImageSourcePropType,
 } from 'react-native';
 import BottomBar from '../components/bottom-bar';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -25,38 +26,42 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
 
     const [count, setCount] = useState(60);
     const [receive, setReceive] = useState(true);
+    // const [btnValue, setBtnValue] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [rewards, setRewards] = useState<string[]>([]);
+    const [randomImages, setRandomImages] = useState<string[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [randomImage, setRandomImage] = useState(images[0]);
 
     // Hàm xử lý khi nhấn nút lắc
     const handlePress = (num: number) => {
-        const randomIndex = Math.floor(Math.random() * images.length);
-        setRandomImage(images[randomIndex]);
-        if (count >= num) {
-            const newRewards: string[] = Array.from({ length: num }, () =>
-                `MBAT ${Math.floor(100000 + Math.random() * 900000)}`
-            ); // Tạo danh sách mã số may mắn
-
-            setRewards(newRewards); // Cập nhật danh sách phần thưởng
-            setShowPopup(true); // Hiển thị popup
-            setCurrentIndex(0); // Đặt phần thưởng đầu tiên
-            setCount(count - num); // Giảm số lượt lắc
-
-            Vibration.vibrate(500); // Rung khi lắc
-        } else {
+        if (count < num) {
             Alert.alert("Hết lượt lắc!", "Bạn không thể lắc thêm.");
+            return;
         }
+
+        // Tạo danh sách mã số may mắn
+        const newRewards = Array.from({ length: num }, () =>
+            `MBAT ${Math.floor(100000 + Math.random() * 900000)}`
+        );
+
+        // Tạo danh sách hình ảnh ngẫu nhiên tương ứng
+        const newImages = Array.from({ length: num }, () => images[Math.floor(Math.random() * images.length)]);
+
+        setRewards(newRewards); // Cập nhật danh sách mã số may mắn
+        setRandomImages(newImages); // Cập nhật danh sách hình ảnh ngẫu nhiên
+        setShowPopup(true); // Hiển thị popup
+        setCurrentIndex(0); // Đặt phần thưởng đầu tiên
+        setCount(count - num); // Giảm số lượt lắc
+
+        Vibration.vibrate(500); // Rung khi lắc
     };
 
-    const renderRewardItem = ({ item, index }: { item: string; index: number }) => (
-        <View style={styles.rewardContainer}>
-            <Text style={styles.popupReward}>1 Chỉ vàng PNJ 9.999</Text>
-            <Text style={styles.popupCode}>{item}</Text>
-            <Text style={styles.popupCount}>{index + 1}/{rewards.length}</Text>
-        </View>
-    );
+    const btnExit = () => {
+        setReceive(true);
+        setShowPopup(false);
+
+    }
+
 
     return (
         <View style={styles.container}>
@@ -90,7 +95,7 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
 
                     <Pressable
                         style={styles.buttonClose}
-                        onPress={() => setShowPopup(false)}
+                        onPress={() => btnExit()}
                     >
                         <Image source={require('../assets/exit.png')} />
                     </Pressable>
@@ -102,10 +107,14 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
                                 {rewards.length != 1 ?
                                     <>
                                         <Text style={styles.popupTitle}>LỘC TỚI NGẬP TRÀN</Text>
-                                        <Text style={styles.popupReward}>1 Chỉ vàng PNJ 9.999</Text>
+                                        <Text style={styles.popupReward}>
+                                            {randomImages[currentIndex] === images[0]
+                                                ? "1 Chỉ vàng PNJ 9.999"
+                                                : "Nửa chỉ vàng PNJ 9.999"}
+                                        </Text>
                                         <Text style={styles.popupReward}>1 số may mắn</Text>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Image source={randomImage} />
+                                        <View style={{ flexDirection: 'row', marginTop: '8%' }}>
+                                            <Image style={{ marginRight: '15%' }} source={randomImages[currentIndex] as ImageSourcePropType} />
                                             <View style={{ flexDirection: 'row' }}>
                                                 <Image style={styles.somayman} source={require('../assets/somayman.png')} />
                                                 <Text style={styles.popupCode}>{rewards[currentIndex]}</Text>
@@ -115,10 +124,14 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
                                     </>
                                     :
                                     <>
-                                        <Text style={styles.popupReward1}>1 Chỉ vàng PNJ 9.999</Text>
-                                        <Text style={styles.popupReward1}>1 số may mắn</Text>
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Image source={randomImage} />
+                                        <Text style={styles.popupReward1}>
+                                            {randomImages[currentIndex] === images[0]
+                                                ? "1 Chỉ vàng PNJ 9.999"
+                                                : "Nửa chỉ vàng PNJ 9.999"}
+                                        </Text>
+                                        <Text style={styles.popupReward1}>1 số may mắn</Text>6
+                                        <View style={{ flexDirection: 'row', marginTop: '8%' }}>
+                                            <Image style={{ marginRight: '8%' }} source={randomImages[currentIndex] as ImageSourcePropType} />
                                             <View style={{ flexDirection: 'row' }}>
                                                 <Image style={styles.somayman} source={require('../assets/somayman.png')} />
                                                 <Text style={styles.popupCode}>{rewards[currentIndex]}</Text>

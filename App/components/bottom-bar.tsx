@@ -37,7 +37,7 @@ const BottomBar: React.FC<Props> = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
                 style={[styles.btnBar, selectedIndex === 2 && styles.selectedButton2]}
-                onPress={() => handlePress(2, "TrangLac")}
+                onPress={() => handlePress(2, "KhoLacLocVang")}
             >
                 <Image source={require('../assets/kho-loc.png')} style={styles.icon} />
                 <Text style={styles.label}>Kho Lộc</Text>
