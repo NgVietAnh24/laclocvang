@@ -7,7 +7,8 @@ import OnboardLacLoc from './screens/onboard-lacloc';
 import { Provider } from 'react-redux';
 import store from './store/store';
 import TrangLac from './screens/trangLac';
-import KhoLacLocVang from './screens/khoLoc';
+import KhoLoc from './screens/khoLoc';
+import LiXiVang from './screens/liXiVang';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -19,7 +20,8 @@ const App: React.FC = () => {
           <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
           <Stack.Screen name="OnboardLacLoc" component={OnboardLacLoc} options={{ headerShown: false }} />
           <Stack.Screen name="TrangLac" component={TrangLac} options={{ headerShown: false }} />
-          <Stack.Screen name="KhoLacLocVang" component={KhoLacLocVang} options={{ headerShown: false }} />
+          <Stack.Screen name="KhoLoc" component={KhoLoc} options={{ headerShown: false }} />
+          <Stack.Screen name="LiXiVang" component={LiXiVang} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

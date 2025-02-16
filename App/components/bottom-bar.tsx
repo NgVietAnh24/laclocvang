@@ -1,5 +1,4 @@
-import AppLoading from "expo-app-loading";
-import { useFonts } from "expo-font";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { View, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { RootStackParamList } from "../types/type";
@@ -8,14 +7,22 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 type Props = NativeStackScreenProps<RootStackParamList, keyof RootStackParamList>;
 
 const BottomBar: React.FC<Props> = ({ navigation }) => {
-    const [selectedIndex, setSelectedIndex] = useState<number>(0); // Mặc định là "Lì Xì Vàng"
+    const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
+    // Khôi phục selectedIndex từ AsyncStorage
     useEffect(() => {
-        navigation.navigate("TrangLac"); // Điều hướng mặc định
+        const loadIndex = async () => {
+            const storedIndex = await AsyncStorage.getItem("selectedIndex");
+            if (storedIndex !== null) {
+                setSelectedIndex(parseInt(storedIndex, 10));
+            }
+        };
+        loadIndex();
     }, []);
 
-    const handlePress = (index: number, screen: keyof RootStackParamList) => {
+    const handlePress = async (index: number, screen: keyof RootStackParamList) => {
         setSelectedIndex(index);
+        await AsyncStorage.setItem("selectedIndex", index.toString()); // Lưu vào AsyncStorage
         navigation.navigate(screen);
     };
 
@@ -30,14 +37,14 @@ const BottomBar: React.FC<Props> = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
                 style={[styles.btnBar, selectedIndex === 1 && styles.selectedButton1]}
-                onPress={() => handlePress(1, 'TrangLac')}
+                onPress={() => handlePress(1, "LiXiVang")}
             >
                 <Image source={require('../assets/lixi.png')} style={styles.icon} />
                 <Text style={styles.label}>Lì Xì Vàng</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={[styles.btnBar, selectedIndex === 2 && styles.selectedButton2]}
-                onPress={() => handlePress(2, "KhoLacLocVang")}
+                onPress={() => handlePress(2, "KhoLoc")}
             >
                 <Image source={require('../assets/kho-loc.png')} style={styles.icon} />
                 <Text style={styles.label}>Kho Lộc</Text>

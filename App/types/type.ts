@@ -2,5 +2,6 @@ export type RootStackParamList = {
     Splash: undefined;
     OnboardLacLoc: undefined;
     TrangLac: undefined;
-    KhoLacLocVang: undefined;
+    KhoLoc: undefined;
+    LiXiVang: undefined;
 };

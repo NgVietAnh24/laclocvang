@@ -26,7 +26,6 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
 
     const [count, setCount] = useState(60);
     const [receive, setReceive] = useState(true);
-    // const [btnValue, setBtnValue] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [rewards, setRewards] = useState<string[]>([]);
     const [randomImages, setRandomImages] = useState<string[]>([]);
