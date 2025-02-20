@@ -23,7 +23,8 @@ const KhoLoc: React.FC<Props> = ({ navigation, route }) => {
         { id: 1, name: "Phiếu mua hàng " + "\n" + "500K", status: "Chưa nhận", quantity: 5, image: require("../assets/voucher500.png") },
         { id: 2, name: "Phiếu mua hàng " + "\n" + "200K", status: "Chưa nhận", quantity: 4, image: require("../assets/voucher200.png") },
         { id: 3, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: " MB01C" + "\n" + "568356", image: require("../assets/bgLucky.png") },
-        { id: 4, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: "MB01C" + "\n" + "789012", image: require("../assets/bgLucky.png") },
+        { id: 4, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: "MB01C" + "\n" + "789012", image: require("../assets/bgLucky.png") }, { id: 6, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: " MB01C" + "\n" + "568356", image: require("../assets/bgLucky.png") },
+        { id: 5, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: "MB01C" + "\n" + "789012", image: require("../assets/bgLucky.png") },
     ]);
 
     const filteredRewards = rewardList.filter(reward => {
@@ -97,7 +98,7 @@ const KhoLoc: React.FC<Props> = ({ navigation, route }) => {
                 ))}
             </View>
             <View style={styles.containerList}>
-                <FlatList data={filteredRewards} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} numColumns={4} />
+                <FlatList data={filteredRewards} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} numColumns={2} />
             </View>
             <BottomBar navigation={navigation} route={route} />
         </View>
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
     },
     containerList: {
         backgroundColor: '#FFF',
-        height: '75%',
+        height: '65%',
         borderRadius: 10,
     },
     selectedTabText:
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
         // height: 155,
         // backgroundColor: "#FEEBC8",
         // // margin: 8,
-        padding: 10,
+        // padding: 10,
         // // borderRadius: 10
         // ,
     },
@@ -189,7 +190,7 @@ const styles = StyleSheet.create({
     {
         position: 'absolute',
         alignItems: 'center',
-        marginTop: '82%',
+        marginTop: '90%',
         fontSize: 14,
         fontWeight: "bold",
         textAlign: "center"
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
         top: '30%'
     },
     quantity: {
-        marginTop: '120%',
+        marginTop: '130%',
     },
     button:
     {
@@ -214,6 +215,6 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         textAlign: "center",
         color: 'red',
-        marginTop: 5,
+        marginTop: 10,
     },
 });

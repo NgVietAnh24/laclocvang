@@ -9,6 +9,7 @@ import store from './store/store';
 import TrangLac from './screens/trangLac';
 import KhoLoc from './screens/khoLoc';
 import LiXiVang from './screens/liXiVang';
+import QuickQuiz from './screens/giaiDapNhanh';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -22,6 +23,7 @@ const App: React.FC = () => {
           <Stack.Screen name="TrangLac" component={TrangLac} options={{ headerShown: false }} />
           <Stack.Screen name="KhoLoc" component={KhoLoc} options={{ headerShown: false }} />
           <Stack.Screen name="LiXiVang" component={LiXiVang} options={{ headerShown: false }} />
+          <Stack.Screen name="QuickQuiz" component={QuickQuiz} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
