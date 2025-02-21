@@ -14,7 +14,7 @@ const LiXiVang: React.FC<Props> = ({ navigation, route }) => {
             <View style={styles.containerHeader}>
                 <Image source={require('../assets/back.png')} />
                 <Text style={styles.title}>ĐẠI HỘI TRANH TÀI</Text>
-                <Image source={require('../assets/btnInfo.png')} />c:\Users\ADMIN\Downloads\bgContent.png
+                <Image source={require('../assets/btnInfo.png')} />
             </View>
             <Image style={styles.backgroundContent} source={require('../assets/bgContent.png')} />
             <View style={styles.headContent}>
@@ -126,7 +126,9 @@ const LiXiVang: React.FC<Props> = ({ navigation, route }) => {
             </TouchableOpacity>
             <Text style={styles.textVong1}>Đáp nhanh{"\n"}tranh lì xì</Text>
             {/* vong 2 */}
-            <Image style={styles.vong2} source={require('../assets/vong2.png')} />
+            <TouchableOpacity onPress={() => navigation.navigate('TetTranhTai')} style={styles.vong2}>
+                <Image source={require('../assets/vong2.png')} />
+            </TouchableOpacity>
             <Text style={styles.textVong2}>Tết tranh{"\n"}tài</Text>
             {/* vong 3 */}
             <Image style={styles.vong3} source={require('../assets/chungKet.png')} />

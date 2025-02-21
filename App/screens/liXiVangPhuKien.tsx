@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     },
     background: {
         resizeMode: "contain",
+        height: '100%',
         position: 'absolute',
     },
     back: {

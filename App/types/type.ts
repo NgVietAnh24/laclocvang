@@ -6,4 +6,7 @@ export type RootStackParamList = {
     LiXiVang: undefined;
     QuickQuiz: undefined;
     LiXiVangPhuKien: undefined;
+    TetTranhTai: undefined;
+    VitTuKhoan: undefined;
+    GameBanVit: undefined;
 };

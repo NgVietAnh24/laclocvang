@@ -11,6 +11,9 @@ import KhoLoc from './screens/khoLoc';
 import LiXiVang from './screens/liXiVang';
 import QuickQuiz from './screens/giaiDapNhanh';
 import LiXiVangPhuKien from './screens/liXiVangPhuKien';
+import TetTranhTai from './screens/tetTranhTai';
+import VitTuKhoan from './screens/vitTuKhoan';
+import GameBanVit from './screens/gameBanVit';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -26,6 +29,9 @@ const App: React.FC = () => {
           <Stack.Screen name="LiXiVang" component={LiXiVang} options={{ headerShown: false }} />
           <Stack.Screen name="QuickQuiz" component={QuickQuiz} options={{ headerShown: false }} />
           <Stack.Screen name="LiXiVangPhuKien" component={LiXiVangPhuKien} options={{ headerShown: false }} />
+          <Stack.Screen name="TetTranhTai" component={TetTranhTai} options={{ headerShown: false }} />
+          <Stack.Screen name="VitTuKhoan" component={VitTuKhoan} options={{ headerShown: false }} />
+          <Stack.Screen name="GameBanVit" component={GameBanVit} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
