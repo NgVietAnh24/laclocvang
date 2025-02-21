@@ -5,4 +5,5 @@ export type RootStackParamList = {
     KhoLoc: undefined;
     LiXiVang: undefined;
     QuickQuiz: undefined;
+    LiXiVangPhuKien: undefined;
 };

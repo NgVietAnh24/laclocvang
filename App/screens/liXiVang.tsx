@@ -121,7 +121,7 @@ const LiXiVang: React.FC<Props> = ({ navigation, route }) => {
             <Image style={styles.logo3} source={require('../assets/500k.png')} />
             <Text style={styles.textLogo3}>Phiếu mua hàng{"\n"}500K</Text>
             {/* vong 1 */}
-            <TouchableOpacity onPress={() => navigation.navigate('QuickQuiz')} style={styles.vong1}>
+            <TouchableOpacity onPress={() => navigation.navigate('LiXiVangPhuKien')} style={styles.vong1}>
                 <Image source={require('../assets/vong1.png')} />
             </TouchableOpacity>
             <Text style={styles.textVong1}>Đáp nhanh{"\n"}tranh lì xì</Text>
@@ -184,6 +184,7 @@ const styles = StyleSheet.create({
         fontWeight: '400',
         fontFamily: 'SVN-Cookies',
         color: '#A60006',
+        marginHorizontal: '4%',
     },
     headContent: {
         position: 'absolute',

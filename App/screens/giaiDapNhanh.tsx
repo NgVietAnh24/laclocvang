@@ -23,16 +23,16 @@ type Props = NativeStackScreenProps<RootStackParamList, 'QuickQuiz'>;
 
 const QuickQuiz: React.FC<Props> = ({ navigation }) => {
     const [players, setPlayers] = useState<Player[]>([
-        { id: 1, name: "Bạn", avatar: require("../assets/player1.png"), score: 0, responseTime: 0 },
-        { id: 2, name: "Đối thủ", avatar: require("../assets/player2.png"), score: 0, responseTime: 0 }
+        { id: 1, name: "Việt Anh", avatar: require("../assets/player1.png"), score: 0, responseTime: 0 },
+        { id: 2, name: "Nhật Nam", avatar: require("../assets/player2.png"), score: 0, responseTime: 0 }
     ]);
 
     const [questions, setQuestions] = useState<Question[]>([
-        { id: 1, question: "Thủ đô của Việt Nam là gì?", options: ["Hà Nội", "TP.HCM", "Đà Nẵng", "Huế"], answer: "Hà Nội" },
-        { id: 2, question: "2 + 2 bằng mấy?", options: ["3", "4", "5", "6"], answer: "4" },
-        { id: 3, question: "Màu của bầu trời là gì?", options: ["Đỏ", "Xanh", "Vàng", "Đen"], answer: "Xanh" },
-        { id: 4, question: "Nước nào có diện tích lớn nhất thế giới?", options: ["Mỹ", "Trung Quốc", "Nga", "Canada"], answer: "Nga" },
-        { id: 5, question: "Loài vật nào chạy nhanh nhất?", options: ["Sư tử", "Ngựa", "Báo Gê-pa", "Hươu"], answer: "Báo Gê-pa" }
+        { id: 1, question: "Tết Nguyên Đán thường diễn ra vào tháng nào trong năm?", options: ["Tháng Giêng", "Tháng Hai", "Tháng Ba", "Tháng Tư"], answer: "Tháng Giêng" },
+        { id: 2, question: "Bánh chưng thường được làm từ các nguyên liệu nào sau đây?", options: ["Gạo nếp, thịt heo, đậu xanh, lá chuối", "Gạo nếp, thịt gà, đậu đỏ, lá dong", "Gạo nếp, cá, đậu phộng, lá sen", "Gạo nếp, thịt bò, đậu trắng, lá dừa"], answer: "Bánh chưng thường được làm từ các nguyên liệu nào sau đây?" },
+        { id: 3, question: "Tết Trung Thu được tổ chức vào ngày nào trong năm âm lịch?", options: ["Ngày 1/8", "Ngày 15/8", "Ngày 25/8", "Ngày 30/8"], answer: "Ngày 15/8" },
+        { id: 4, question: "Mâm ngũ quả trong ngày Tết thường gồm những loại quả nào sau đây?", options: ["Táo, cam, lê, dưa hấu, nho", "Mãng cầu, dừa, đu đủ, xoài, chuối", "Nhãn, vải, chôm chôm, mận, quýt", "Chuối, dưa hấu, bưởi, mãng cầu, đào"], answer: "Mãng cầu, dừa, đu đủ, xoài, chuối" },
+        { id: 5, question: "Người ta thường kiêng kỵ việc gì trong những ngày đầu năm mới?", options: ["Quét nhà", "Đi ra ngoài", "Làm vườn", "Đi chợ"], answer: "Quét nhà" }
     ]);
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -87,7 +87,7 @@ const QuickQuiz: React.FC<Props> = ({ navigation }) => {
         <View style={styles.container}>
             <Image style={styles.imgGame} source={require('../assets/bgGame.png')} />
             <View style={styles.title}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Image source={require('../assets/back.png')} />
                 </TouchableOpacity>
                 <Svg height="80" width="319" viewBox="0 0 319 84" >
@@ -106,7 +106,7 @@ const QuickQuiz: React.FC<Props> = ({ navigation }) => {
                         fontSize="24"
                         fontWeight="700"
                         x="35%"
-                        y="18"
+                        y="48"
                         textAnchor="middle"
                     >
                         Đáp nhanh tranh lì xì
@@ -118,8 +118,8 @@ const QuickQuiz: React.FC<Props> = ({ navigation }) => {
                 {players.map(player => (
                     <View key={player.id} style={styles.player}>
                         <Image source={player.avatar} style={styles.avatar} />
-                        <Text>{player.name}</Text>
-                        <Text>Điểm: {player.score}</Text>
+                        <Text style={styles.name}>{player.name}</Text>
+                        <Text style={styles.core}>Điểm: {player.score}</Text>
                     </View>
                 ))}
             </View>
@@ -129,7 +129,7 @@ const QuickQuiz: React.FC<Props> = ({ navigation }) => {
                     <Text style={styles.question}>{questions[currentQuestionIndex].question}</Text>
                     {questions[currentQuestionIndex].options.map(option => (
                         <TouchableOpacity key={option} style={styles.option} onPress={() => handleAnswer(option, 1)}>
-                            <Text>{option}</Text>
+                            <Text style={styles.textOption}>{option}</Text>
                         </TouchableOpacity>
                     ))}
                 </View>
@@ -158,13 +158,13 @@ export default QuickQuiz;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // padding: 20,
-        // alignItems: "center",
         justifyContent: "center",
-        // backgroundColor: "#F9F9F9"
     },
     title: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: '10%',
+        marginHorizontal: '5%',
     },
     playersContainer: {
         flexDirection: "row",
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
         width: "100%"
     },
     player: {
-        alignItems: "center"
+        alignItems: "center",
     },
     avatar: {
         width: 50,
@@ -187,16 +187,41 @@ const styles = StyleSheet.create({
     question: {
         fontSize: 18,
         fontWeight: "bold",
-        marginBottom: 10
+        marginBottom: 10,
+        color: '#FFF',
+        lineHeight: 23,
+        paddingBottom: '10%',
     },
     option: {
+        width: '85%',
         padding: 10,
-        backgroundColor: "#EEE",
-        margin: 5,
-        borderRadius: 5
+        backgroundColor: "#A60006",
+        margin: 8,
+        borderRadius: 15,
+        borderColor: '#FFE995',
+        borderWidth: 3,
     },
     imgGame: {
         position: 'absolute',
         resizeMode: 'cover',
+    },
+    name: {
+        fontSize: 18,
+        fontWeight: '500',
+        lineHeight: 28,
+        fontFamily: 'SVN-Cookies',
+        color: '#FFE995',
+    },
+    core: {
+        fontSize: 18,
+        fontWeight: '500',
+        lineHeight: 28,
+        color: '#FFE907',
+    },
+    textOption: {
+        fontSize: 15,
+        fontWeight: '500',
+        fontFamily: 'SVN-Cookies',
+        color: '#FFE907',
     },
 });
