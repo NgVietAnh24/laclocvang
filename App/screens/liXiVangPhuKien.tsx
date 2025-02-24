@@ -25,7 +25,7 @@ const LiXiVangPhuKien: React.FC<Props> = ({ navigation, route }) => {
             <TouchableOpacity onPress={() => navigation.navigate('QuickQuiz')} style={styles.btn}>
                 <Image source={require('../assets/thanhLiXi.png')} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btn}>
+            <TouchableOpacity onPress={() => navigation.navigate('SieuThiPhuKien')} style={styles.btn}>
                 <Image source={require('../assets/sieuThiPhuKien.png')} />
             </TouchableOpacity>
             <BottomBar navigation={navigation} route={route} />

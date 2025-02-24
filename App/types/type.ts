@@ -12,4 +12,6 @@ export type RootStackParamList = {
     ThanhAnhKim: undefined;
     GameAnhKim: undefined;
     SieuBaoVe: undefined;
+    GameBaoVe: undefined;
+    SieuThiPhuKien: undefined;
 };

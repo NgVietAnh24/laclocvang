@@ -45,11 +45,11 @@ const SieuBaoVe: React.FC<Props> = ({ navigation, route }) => {
                     SIÊU BẢO VỆ
                 </Text>
                 <Text style={styles.textContent}>
-                    Khám phá ngôi nhà lấp lánh ngay nào!{"\n"}
-                    Chạm liên tục vào trần Ánh Kim, chạm càng nhanh điểm càng cao, bạn sẽ chiến thắng đối thủ!
+                    Khám phá ngôi nhà vững chắc ngay nào!{"\n"}
+                    Chạm liên tục vào khiên bảo vệ, chạm càng nhanh điểm càng cao, bạn sẽ chiến thắng đối thủ!
                 </Text>
-                <Image style={styles.khoan} source={require('../assets/khien.webp')} />
-                <TouchableOpacity onPress={() => navigation.navigate('GameAnhKim')} style={styles.timDoiThu}>
+                <Image style={styles.khoan} source={require('../assets/khien.png')} />
+                <TouchableOpacity onPress={() => navigation.navigate('GameBaoVe')} style={styles.timDoiThu}>
                     <Image source={require('../assets/timDoiThu.png')} />
                 </TouchableOpacity>
                 <Image style={styles.notifi} source={require('../assets/notifiTime.png')} />
@@ -106,8 +106,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     khoan: {
-        // marginTop: '10%',
-        width: 330,
+        width: 500,
+        height: '47%',
         resizeMode: 'contain',
     },
     timDoiThu: {
