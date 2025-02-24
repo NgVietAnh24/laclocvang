@@ -4,9 +4,9 @@ import { RootStackParamList } from "../types/type";
 import Svg, { Text as SvgText, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
 import BottomBar from "../components/bottom-bar";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'VitTuKhoan'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'ThanhAnhKim'>;
 
-const VitTuKhoan: React.FC<Props> = ({ navigation, route }) => {
+const ThanhAnhKim: React.FC<Props> = ({ navigation, route }) => {
     return (
         <View style={styles.container}>
             <Image style={styles.backgroud} source={require('../assets/bgVitTuKhoan.png')} />
@@ -42,13 +42,14 @@ const VitTuKhoan: React.FC<Props> = ({ navigation, route }) => {
             <Image style={styles.imgContent} source={require('../assets/imgContent.png')} />
             <View style={styles.khoanContainer}>
                 <Text style={styles.headContent}>
-                    THỬ TÀI BẮN VÍT
+                    THÁNH ÁNH KIM
                 </Text>
                 <Text style={styles.textContent}>
-                    Vận dụng tài bắn vít siêu đỉnh: chạm liên tục vào màn hình, chạm càng nhanh điểm càng cao, bạn sẽ chiến thắng đối thủ!
+                    Khám phá ngôi nhà lấp lánh ngay nào!{"\n"}
+                    Chạm liên tục vào trần Ánh Kim, chạm càng nhanh điểm càng cao, bạn sẽ chiến thắng đối thủ!
                 </Text>
-                <Image style={styles.khoan} source={require('../assets/khoan.png')} />
-                <TouchableOpacity onPress={() => navigation.navigate('GameBanVit')} style={styles.timDoiThu}>
+                <Image style={styles.khoan} source={require('../assets/gach.png')} />
+                <TouchableOpacity onPress={() => navigation.navigate('GameAnhKim')} style={styles.timDoiThu}>
                     <Image source={require('../assets/timDoiThu.png')} />
                 </TouchableOpacity>
                 <Image style={styles.notifi} source={require('../assets/notifiTime.png')} />
@@ -58,7 +59,7 @@ const VitTuKhoan: React.FC<Props> = ({ navigation, route }) => {
     );
 }
 
-export default VitTuKhoan;
+export default ThanhAnhKim;
 
 const styles = StyleSheet.create({
     container: {
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
     },
     textContent: {
         textAlign: 'center',
-        width: 280,
+        width: 270,
         lineHeight: 18,
         fontSize: 14,
         fontWeight: '400',

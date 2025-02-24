@@ -10,9 +10,9 @@ interface Icon {
     y: number;
 }
 
-type Props = NativeStackScreenProps<RootStackParamList, 'GameBanVit'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'GameAnhKim'>;
 
-const GameBanVit: React.FC<Props> = ({ navigation, route }) => {
+const GameAnhKim: React.FC<Props> = ({ navigation, route }) => {
     const [isSearching, setIsSearching] = useState(true);
     const [score, setScore] = useState(0);
     const [timeLeft, setTimeLeft] = useState(120); // 2 phút
@@ -94,26 +94,27 @@ const GameBanVit: React.FC<Props> = ({ navigation, route }) => {
             ) : (
                 <>
                     <Text style={styles.title}>THỬ TÀI BẮN VÍT</Text>
+                    {/* <Text style={styles.score}>Điểm: {score}</Text> */}
                     <View style={styles.timeContainer}>
                         <Image source={require('../assets/time.png')} />
                         <Text style={styles.timer}>{timeLeft}</Text>
-                        <Text style={styles.slogan}>THI CÔNG NGON</Text>
+                        <Text style={styles.slogan}>BỀN MÀU</Text>
                     </View>
+
                     {isGameOver && (
                         <Text style={styles.winner}>
                             {score > 0 ? `Bạn đã thắng! Điểm của bạn: ${score} ${"\n"}Nhận được 5 lì xì ` : 'Bạn đã thua cuộc!'}
                         </Text>
                     )}
                     <View style={styles.iconContainer}>
-                        <Image source={require('../assets/khoanVit.png')} style={styles.iconBackground} />
+                        <Image source={require('../assets/bgAnhKim.png')} style={styles.iconBackground} />
                         {icons.map(icon => (
                             <TouchableOpacity
                                 key={icon.id}
                                 onPress={() => handlePress(icon.id)}
                                 style={[styles.icon, { left: icon.x, top: icon.y }]}
                             >
-                                <Image source={require('../assets/vit.png')} />
-                                {/* <Text style={styles.iconText}>+1</Text> */}
+                                <Image source={require('../assets/kim.png')} />
                             </TouchableOpacity>
                         ))}
                     </View>
@@ -137,7 +138,7 @@ const GameBanVit: React.FC<Props> = ({ navigation, route }) => {
     );
 }
 
-export default GameBanVit;
+export default GameAnhKim;
 
 const styles = StyleSheet.create({
     container: {
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         top: '17.5%',
         width: '90%',
-        height: '60%',
+        height: '58%',
     },
     iconBackground: {
         width: '100%',
@@ -193,22 +194,6 @@ const styles = StyleSheet.create({
         fontWeight: '400',
         fontFamily: 'SVN-Cookies',
     },
-    slogan: {
-        top: '190%',
-        fontWeight: '400',
-        fontSize: 17,
-        lineHeight: 18,
-        fontFamily: 'SVN-Cookies',
-        position: 'absolute',
-        color: '#C4040B',
-        width: 200,
-        textAlign: 'center',
-        left: '-5%',
-        padding: 2,
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 1,
-        textShadowColor: '#FFE995',
-    },
     winner: {
         position: 'absolute',
         fontSize: 15,
@@ -222,6 +207,22 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         borderColor: '#FFD053',
         borderWidth: 2,
+    },
+    slogan: {
+        top: '490%',
+        fontWeight: '400',
+        fontSize: 17,
+        lineHeight: 18,
+        fontFamily: 'SVN-Cookies',
+        position: 'absolute',
+        color: '#C4040B',
+        width: 200,
+        textAlign: 'center',
+        left: '-40%',
+        padding: 2,
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 1,
+        textShadowColor: '#FFE995',
     },
     icon: {
         width: 50,

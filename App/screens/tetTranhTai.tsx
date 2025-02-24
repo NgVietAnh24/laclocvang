@@ -16,10 +16,10 @@ const TetTranhTai: React.FC<Props> = ({ navigation, route }) => {
                 <TouchableOpacity onPress={() => navigation.navigate('VitTuKhoan')} style={styles.btn}>
                     <Image source={require('../assets/banVit.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn}>
+                <TouchableOpacity onPress={() => navigation.navigate('SieuBaoVe')} style={styles.btn}>
                     <Image source={require('../assets/baoVe.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn}>
+                <TouchableOpacity onPress={() => navigation.navigate('ThanhAnhKim')} style={styles.btn}>
                     <Image source={require('../assets/anhKim.png')} />
                 </TouchableOpacity>
             </View>
