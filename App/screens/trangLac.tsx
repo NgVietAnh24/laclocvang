@@ -164,7 +164,11 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
                                         style={[styles.navButton, currentIndex === 0 && styles.disabledButton]}
                                         disabled={currentIndex === 0}
                                     >
-                                        <Image style={styles.imgBtnPrev} source={require('../assets/prev.png')} />
+                                        {currentIndex + 1 > 1 ?
+                                            <Image style={styles.imgBtnNext1} source={require('../assets/next.png')} />
+                                            :
+                                            <Image style={styles.imgBtnPrev} source={require('../assets/prev.png')} />
+                                        }
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
@@ -172,7 +176,11 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
                                         style={[styles.navButton, currentIndex === rewards.length - 1 && styles.disabledButton]}
                                         disabled={currentIndex === rewards.length - 1}
                                     >
-                                        <Image style={styles.imgBtnNext} source={require('../assets/next.png')} />
+                                        {currentIndex + 1 === rewards.length ?
+                                            <Image style={styles.imgBtnNext1} source={require('../assets/prev.png')} />
+                                            :
+                                            <Image style={styles.imgBtnNext} source={require('../assets/next.png')} />
+                                        }
                                     </TouchableOpacity>
                                 </View><Text style={styles.popupMessage}>
                                     Chúc mừng thánh lắc,{"\n"}
@@ -342,8 +350,13 @@ const styles = StyleSheet.create({
         height: 28,
     },
     imgBtnNext: {
-        width: 34,
-        height: 34,
+        width: 28,
+        height: 28,
+    },
+    imgBtnNext1: {
+        width: 28,
+        height: 28,
+        transform: [{ rotate: '180deg' }]
     },
     imgLac1: {
         position: 'absolute',
