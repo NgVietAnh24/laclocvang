@@ -30,6 +30,7 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
     const [rewards, setRewards] = useState<string[]>([]);
     const [randomImages, setRandomImages] = useState<string[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [receivedRewards, setReceivedRewards] = useState<string[]>([]); // Danh sách phần thưởng đã nhận
 
     // Hàm xử lý khi nhấn nút lắc
     const handlePress = (num: number) => {
@@ -56,9 +57,11 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
     };
 
     const btnExit = () => {
-        setReceive(true);
         setShowPopup(false);
-
+        // Lưu phần thưởng vào kho lộc khi popup đóng
+        if (rewards.length > 0) {
+            setReceivedRewards(prev => [...prev, rewards[currentIndex]]);
+        }
     }
 
 

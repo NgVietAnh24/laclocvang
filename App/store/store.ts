@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 // import userReducer from '../slices/userSlice';
-// import imageReducer from '../slices/imageSlice';
+import imageReducer from '../slices/imageSlice';
 // import resultsReducer from '../slices/resultSlice';
 
 const store = configureStore({
   reducer: {
     // user: userReducer,
-    // images: imageReducer,
+    images: imageReducer,
     // results: resultsReducer,
   },
   // Optional: Cách tùy chỉnh middleware

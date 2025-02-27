@@ -1,21 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import { RootStackParamList } from '../types/type';
 import PhotoMotion from '../navigation/photoMotion';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
+import { fetchImageUrls } from '../slices/imageSlice';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OnboardLacLoc'>;
 
 const OnboardLacLoc: React.FC<Props> = ({ navigation }) => {
-    const [fontsLoaded] = useFonts({
-        'SVN-Cookies': require('../assets/fonts/SVN-Cookies.ttf'),
-    });
+    // const [fontsLoaded] = useFonts({
+    //     'SVN-Cookies': require('../assets/fonts/SVN-Cookies.ttf'),
+    // });
 
-    if (!fontsLoaded) {
-        return <AppLoading />;
-    }
+    // if (!fontsLoaded) {
+    //     return <AppLoading />;
+    // }
+
+    const dispatch = useDispatch<AppDispatch>();
+    const { imageUrls, loading, error } = useSelector((state: RootState) => state.images);
+
+    useEffect(() => {
+        dispatch(fetchImageUrls([
+            'images/gach.png',
+            'images/img-laclocvang.png',
+            'images/khoan.png',
+            'images/person.png',
+        ]));
+    }, [dispatch]);
 
     return (
         <View style={styles.container}>

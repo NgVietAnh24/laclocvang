@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { View, StyleSheet, Image, TouchableOpacity, Text, FlatList } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity, Text, FlatList, Alert } from "react-native";
 import { RootStackParamList } from "../types/type";
 import BottomBar from "../components/bottom-bar";
 import { useState } from "react";
@@ -19,7 +19,7 @@ interface Reward {
 
 const SieuThiPhuKien: React.FC<Props> = ({ navigation, route }) => {
 
-    const [count, setCount] = useState(110);
+    const [count, setCount] = useState(1100);
 
     const [rewardList, setRewardList] = useState<Reward[]>([
         { id: 1, name: "Phiếu mua hàng " + "\n" + "100K", requirment: 44, quantity: 2500, image: require("../assets/100k.png"), background: require("../assets/bgSieuThiPhuKien.png"), count: 0 },
@@ -42,6 +42,27 @@ const SieuThiPhuKien: React.FC<Props> = ({ navigation, route }) => {
         );
     }
 
+    const doiNgay = (id: number) => {
+        setRewardList(prevList => {
+            const updatedList = prevList.map(reward => {
+                if (reward.id === id) {
+                    const totalRequired = reward.requirment * reward.count; // Tính tổng số lì xì cần thiết
+                    if (count >= totalRequired && reward.count > 0) {
+                        // Nếu đủ số lượng lì xì và có số lượng phần thưởng muốn đổi
+                        Alert.alert("Thành công", `Bạn đã đổi ${reward.name} thành công!`);
+                        setCount(count - totalRequired); // Giảm số lượng lì xì
+                        return { ...reward, count: 0 }; // Đặt lại số lượng phần thưởng đã đổi về 0
+                    } else {
+                        // Nếu không đủ số lượng lì xì hoặc không có số lượng phần thưởng muốn đổi
+                        Alert.alert("Thất bại", "Bạn không đủ số lượng lì xì để đổi phần thưởng này hoặc chưa chọn số lượng.");
+                    }
+                }
+                return reward;
+            });
+            return updatedList;
+        });
+    }
+
     const renderItem = ({ item }: { item: Reward }) => (
         <View style={styles.rewardItem}>
             {item.background && <Image source={item.background} style={styles.bgSieuThi} />}
@@ -62,6 +83,9 @@ const SieuThiPhuKien: React.FC<Props> = ({ navigation, route }) => {
                             <Image source={require('../assets/+.png')} />
                         </TouchableOpacity>
                     </View>
+                    <TouchableOpacity onPress={() => doiNgay(item.id)}>
+                        <Image source={require('../assets/btnDoiNgay.png')} />
+                    </TouchableOpacity>
                 </View>
 
 
@@ -95,9 +119,9 @@ const SieuThiPhuKien: React.FC<Props> = ({ navigation, route }) => {
                 <Image style={styles.cloud} source={require('../assets/cloud.png')} />
                 <View style={styles.footerContainner}>
                     <Text style={styles.textFooter}>Bạn đang có <Text style={styles.countLixi} >{count}</Text> lì xì</Text>
-                    <TouchableOpacity>
+                    {/* <TouchableOpacity onPress={() => doiNgay(item.id)}>
                         <Image source={require('../assets/btnDoiNgay.png')} />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </View>
             <BottomBar navigation={navigation} route={route} />
@@ -186,6 +210,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
+        marginBottom: '5%',
     },
     quatity: {
         fontSize: 12,

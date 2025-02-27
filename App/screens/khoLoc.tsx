@@ -29,7 +29,7 @@ const KhoLoc: React.FC<Props> = ({ navigation, route }) => {
 
     const filteredRewards = rewardList.filter(reward => {
         if (selectedTab === "Lắc Lộc Vàng") return true;
-        if (selectedTab === "Lì Xì Vàng") return reward.image;
+        if (selectedTab === "Lì Xì Vàng") return reward.name != "Mã số may mắn";
         if (selectedTab === "Mã Số May Mắn") return reward.code;
     });
 
