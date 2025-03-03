@@ -11,15 +11,10 @@ import { fetchImageUrls } from '../slices/imageSlice';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OnboardLacLoc'>;
 
-const OnboardLacLoc: React.FC<Props> = ({ navigation }) => {
-    // const [fontsLoaded] = useFonts({
-    //     'SVN-Cookies': require('../assets/fonts/SVN-Cookies.ttf'),
-    // });
-
-    // if (!fontsLoaded) {
-    //     return <AppLoading />;
-    // }
-
+const OnboardLacLoc: React.FC<Props> = ({ navigation, route }) => {
+    const [fontsLoaded] = useFonts({
+        'SVN-Cookies': require('../assets/fonts/SVN-Cookies.ttf'),
+    });
     const dispatch = useDispatch<AppDispatch>();
     const { imageUrls, loading, error } = useSelector((state: RootState) => state.images);
 
@@ -31,6 +26,13 @@ const OnboardLacLoc: React.FC<Props> = ({ navigation }) => {
             'images/person.png',
         ]));
     }, [dispatch]);
+
+    if (!fontsLoaded) {
+        return <AppLoading />;
+    }
+    const { userId } = route.params;
+    console.log('Received User ID:', userId);
+
 
     return (
         <View style={styles.container}>
@@ -52,7 +54,7 @@ const OnboardLacLoc: React.FC<Props> = ({ navigation }) => {
                     Nhận một lúc 10 phần quà!
                 </Text>
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('TrangLac')} style={styles.btn2}>
+            <TouchableOpacity onPress={() => navigation.navigate('TrangLac', { userId })} style={styles.btn2}>
                 <Image source={require('../assets/btn2.png')} />
             </TouchableOpacity>
         </View>

@@ -2,8 +2,11 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { View, StyleSheet, Image, TouchableOpacity, Text, FlatList, Alert } from "react-native";
 import { RootStackParamList } from "../types/type";
 import BottomBar from "../components/bottom-bar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { counterEvent } from "react-native/Libraries/Performance/Systrace";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
+import { fetchLuotLacById, listenLixiById, updateLixi } from "../slices/userSlice";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SieuThiPhuKien'>;
 
@@ -17,9 +20,30 @@ interface Reward {
     background: any;
 }
 
+
 const SieuThiPhuKien: React.FC<Props> = ({ navigation, route }) => {
 
-    const [count, setCount] = useState(1100);
+    const { userId } = route.params;
+    const dispatch = useDispatch<AppDispatch>();
+    dispatch(fetchLuotLacById(userId));
+    console.log('userId =====:', userId);
+    const user = useSelector((state: RootState) =>
+        state.users.data.find(user => user.id === userId)
+    );
+    const lixi = Number(useSelector((state: any) => state.users.lixi) || 0);
+
+
+    useEffect(() => {
+        const unsubscribe = dispatch(listenLixiById(userId));
+
+        return () => {
+            unsubscribe(); // Hủy lắng nghe khi component unmount
+        };
+    }, [dispatch, userId]);
+    console.log('Số lượt lắc =====:', lixi);
+    console.log('Số lượt lắc =====:', user);
+
+    const [count, setCount] = useState(lixi);
 
     const [rewardList, setRewardList] = useState<Reward[]>([
         { id: 1, name: "Phiếu mua hàng " + "\n" + "100K", requirment: 44, quantity: 2500, image: require("../assets/100k.png"), background: require("../assets/bgSieuThiPhuKien.png"), count: 0 },
@@ -42,18 +66,25 @@ const SieuThiPhuKien: React.FC<Props> = ({ navigation, route }) => {
         );
     }
 
+
     const doiNgay = (id: number) => {
         setRewardList(prevList => {
             const updatedList = prevList.map(reward => {
                 if (reward.id === id) {
-                    const totalRequired = reward.requirment * reward.count; // Tính tổng số lì xì cần thiết
+                    const totalRequired = reward.requirment * reward.count; // Tính tổng lì xì cần thiết
                     if (count >= totalRequired && reward.count > 0) {
-                        // Nếu đủ số lượng lì xì và có số lượng phần thưởng muốn đổi
+                        // Nếu đủ lì xì để đổi
                         Alert.alert("Thành công", `Bạn đã đổi ${reward.name} thành công!`);
-                        setCount(count - totalRequired); // Giảm số lượng lì xì
+
+                        const newLixi = count - totalRequired; // Tính số lì xì còn lại
+                        setCount(newLixi); // Cập nhật UI
+
+                        // Gửi cập nhật lên Firestore
+                        dispatch(updateLixi({ userId, lixi: newLixi }));
+
                         return { ...reward, count: 0 }; // Đặt lại số lượng phần thưởng đã đổi về 0
                     } else {
-                        // Nếu không đủ số lượng lì xì hoặc không có số lượng phần thưởng muốn đổi
+                        // Nếu không đủ lì xì
                         Alert.alert("Thất bại", "Bạn không đủ số lượng lì xì để đổi phần thưởng này hoặc chưa chọn số lượng.");
                     }
                 }
@@ -61,7 +92,7 @@ const SieuThiPhuKien: React.FC<Props> = ({ navigation, route }) => {
             });
             return updatedList;
         });
-    }
+    };
 
     const renderItem = ({ item }: { item: Reward }) => (
         <View style={styles.rewardItem}>
@@ -90,15 +121,7 @@ const SieuThiPhuKien: React.FC<Props> = ({ navigation, route }) => {
 
 
             </View>
-            {/* {item.code && <Text style={styles.code}>{item.code}</Text>} */}
-            {/* {item.status === "Chưa nhận" ? (
-                        <TouchableOpacity style={styles.button} onPress={() => handleReceiveReward(item.id)}>
-                            <Text style={{ color: '#732F2F' }}>Trạng thái:</Text>
-                            <Text style={styles.buttonText}>Chưa nhận</Text>
-                        </TouchableOpacity>
-                    ) : (
-                        <Text style={styles.receivedText}>Đã nhận</Text>
-                    )} */}
+
         </View>
     );
     return (
@@ -119,9 +142,6 @@ const SieuThiPhuKien: React.FC<Props> = ({ navigation, route }) => {
                 <Image style={styles.cloud} source={require('../assets/cloud.png')} />
                 <View style={styles.footerContainner}>
                     <Text style={styles.textFooter}>Bạn đang có <Text style={styles.countLixi} >{count}</Text> lì xì</Text>
-                    {/* <TouchableOpacity onPress={() => doiNgay(item.id)}>
-                        <Image source={require('../assets/btnDoiNgay.png')} />
-                    </TouchableOpacity> */}
                 </View>
             </View>
             <BottomBar navigation={navigation} route={route} />
@@ -145,7 +165,6 @@ const styles = StyleSheet.create({
         right: '10%',
     },
     back: {
-        // right: '35%',
     },
     background: {
         position: 'absolute',
@@ -161,12 +180,6 @@ const styles = StyleSheet.create({
     {
         flex: 1,
         alignItems: "center",
-        // height: 155,
-        // backgroundColor: "#FEEBC8",
-        // // margin: 8,
-        // padding: 10,
-        // // borderRadius: 10
-        // ,
     },
     image:
     {

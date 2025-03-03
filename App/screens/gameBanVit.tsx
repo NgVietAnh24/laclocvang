@@ -1,8 +1,13 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { RootStackParamList } from '../types/type';
 import BottomBar from '../components/bottom-bar';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
+import { firestore } from '../firebase/config';
+import { doc, updateDoc } from 'firebase/firestore';
+import { listenLixiById, updateLixi } from '../slices/userSlice';
 
 interface Icon {
     id: number;
@@ -18,6 +23,37 @@ const GameBanVit: React.FC<Props> = ({ navigation, route }) => {
     const [timeLeft, setTimeLeft] = useState(120); // 2 phút
     const [isGameOver, setIsGameOver] = useState(false);
     const [icons, setIcons] = useState<Icon[]>([]); // Chỉ định kiểu cho icons
+
+    const randomNames = [
+        "Minh Anh", "Hải Đăng", "Thanh Tâm", "Phương Linh", "Quốc Bảo",
+        "Bảo Ngọc", "Đức Thịnh", "Huy Hoàng", "Khánh Linh", "Trọng Nhân"
+    ];
+
+    const getRandomName = () => {
+        const randomIndex = Math.floor(Math.random() * randomNames.length);
+        return randomNames[randomIndex];
+    };
+
+    const getRandomNumber = (): number => Math.floor(Math.random() * 51);
+    const { userId } = route.params;
+    const dispatch = useDispatch<AppDispatch>();
+    const lixi = useSelector((state: any) => state.users.lixi);
+    const [count, setCount] = useState(lixi);
+    useEffect(() => {
+        const unsubscribe = dispatch(listenLixiById(userId));
+
+        return () => {
+            unsubscribe(); // Hủy lắng nghe khi component unmount
+        };
+    }, [dispatch, userId]);
+    const user = useSelector((state: RootState) =>
+        state.users.data.find(user => user.id === userId)
+    );
+    console.log("User data:", user);
+    console.log("Current lixi:", user?.lixi);
+
+
+    console.log("User datsa:", lixi);
 
     // Kích thước khu vực hình chữ nhật
     const rectangleWidth = 300; // Chiều rộng
@@ -49,6 +85,16 @@ const GameBanVit: React.FC<Props> = ({ navigation, route }) => {
     }, [isGameOver]);
 
     useEffect(() => {
+        if (isGameOver && score > 0) {
+            const newLixi = count + 5;
+            setCount(newLixi);
+            updateLiXi(userId, newLixi);
+        }
+    }, [isGameOver]);
+
+
+
+    useEffect(() => {
         if (!isGameOver) {
             const generateIcons = () => {
                 const numberOfIcons = Math.floor(Math.random() * 2) + 2; // 2 hoặc 3 icon
@@ -66,6 +112,18 @@ const GameBanVit: React.FC<Props> = ({ navigation, route }) => {
             return () => clearInterval(iconInterval);
         }
     }, [isGameOver]);
+
+    const updateLiXi = async (userId: string, newLixi: number) => {
+        try {
+            const userRef = doc(firestore, "users", userId);
+            await updateDoc(userRef, { lixi: newLixi });
+
+            console.log(`Cập nhật lì xì thành công! Tổng lì xì: ${newLixi}`);
+        } catch (error) {
+            console.error("Lỗi khi cập nhật lì xì:", error);
+        }
+    };
+
 
     const handlePress = (id: number) => {
         if (!isGameOver) {
@@ -101,7 +159,7 @@ const GameBanVit: React.FC<Props> = ({ navigation, route }) => {
                     </View>
                     {isGameOver && (
                         <Text style={styles.winner}>
-                            {score > 0 ? `Bạn đã thắng! Điểm của bạn: ${score} ${"\n"}Nhận được 5 lì xì ` : 'Bạn đã thua cuộc!'}
+                            {score > getRandomNumber() ? `Bạn đã thắng! Điểm của bạn: ${score} ${"\n"}Nhận được 5 lì xì ` : 'Bạn đã thua cuộc!'}
                         </Text>
                     )}
                     <View style={styles.iconContainer}>
@@ -113,7 +171,6 @@ const GameBanVit: React.FC<Props> = ({ navigation, route }) => {
                                 style={[styles.icon, { left: icon.x, top: icon.y }]}
                             >
                                 <Image source={require('../assets/vit.png')} />
-                                {/* <Text style={styles.iconText}>+1</Text> */}
                             </TouchableOpacity>
                         ))}
                     </View>
@@ -127,7 +184,7 @@ const GameBanVit: React.FC<Props> = ({ navigation, route }) => {
                         <View style={styles.opponent}>
                             <Image style={styles.avatar} source={require('../assets/player02.png')} />
                             <Text style={styles.opponentName}>Tuấn Anh</Text>
-                            <Text style={styles.opponentScore1}>0</Text>
+                            <Text style={styles.opponentScore1}>{timeLeft === 0 ? getRandomNumber() : 0}</Text>
                         </View>
                     </View>
                 </>

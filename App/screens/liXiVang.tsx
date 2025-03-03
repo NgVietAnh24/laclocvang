@@ -4,10 +4,22 @@ import BottomBar from "../components/bottom-bar";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/type";
 import Svg, { Text as SvgText, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
+import { fetchLuotLacById } from "../slices/userSlice";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'LiXiVang'>;
 
 const LiXiVang: React.FC<Props> = ({ navigation, route }) => {
+    const { userId } = route.params;
+    const dispatch = useDispatch<AppDispatch>();
+    const user = useSelector((state: RootState) =>
+        state.users.data.find(user => user.id === userId)
+    );
+    dispatch(fetchLuotLacById(userId));
+    console.log('userId =:', userId);
+
+    console.log('Số lượt lắc=:', user?.luotLac);
     return (
         <View style={styles.container}>
             <Image style={styles.background} source={require('../assets/bgLiXiVang.png')} />
@@ -121,12 +133,12 @@ const LiXiVang: React.FC<Props> = ({ navigation, route }) => {
             <Image style={styles.logo3} source={require('../assets/500k.png')} />
             <Text style={styles.textLogo3}>Phiếu mua hàng{"\n"}500K</Text>
             {/* vong 1 */}
-            <TouchableOpacity onPress={() => navigation.navigate('LiXiVangPhuKien')} style={styles.vong1}>
+            <TouchableOpacity onPress={() => navigation.navigate('LiXiVangPhuKien', { userId })} style={styles.vong1}>
                 <Image source={require('../assets/vong1.png')} />
             </TouchableOpacity>
             <Text style={styles.textVong1}>Đáp nhanh{"\n"}tranh lì xì</Text>
             {/* vong 2 */}
-            <TouchableOpacity onPress={() => navigation.navigate('TetTranhTai')} style={styles.vong2}>
+            <TouchableOpacity onPress={() => navigation.navigate('TetTranhTai', { userId })} style={styles.vong2}>
                 <Image source={require('../assets/vong2.png')} />
             </TouchableOpacity>
             <Text style={styles.textVong2}>Tết tranh{"\n"}tài</Text>

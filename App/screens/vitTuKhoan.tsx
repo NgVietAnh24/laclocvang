@@ -3,10 +3,23 @@ import { Image, StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import { RootStackParamList } from "../types/type";
 import Svg, { Text as SvgText, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
 import BottomBar from "../components/bottom-bar";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'VitTuKhoan'>;
 
 const VitTuKhoan: React.FC<Props> = ({ navigation, route }) => {
+
+    const { userId } = route.params;
+    const dispatch = useDispatch<AppDispatch>();
+
+    const user = useSelector((state: RootState) =>
+        state.users.data.find(user => user.id === userId)
+    );
+
+
+    console.log("User datsa:", user);
+
     return (
         <View style={styles.container}>
             <Image style={styles.backgroud} source={require('../assets/bgVitTuKhoan.png')} />
@@ -48,7 +61,7 @@ const VitTuKhoan: React.FC<Props> = ({ navigation, route }) => {
                     Vận dụng tài bắn vít siêu đỉnh: chạm liên tục vào màn hình, chạm càng nhanh điểm càng cao, bạn sẽ chiến thắng đối thủ!
                 </Text>
                 <Image style={styles.khoan} source={require('../assets/khoan.png')} />
-                <TouchableOpacity onPress={() => navigation.navigate('GameBanVit')} style={styles.timDoiThu}>
+                <TouchableOpacity onPress={() => navigation.navigate('GameBanVit', { userId })} style={styles.timDoiThu}>
                     <Image source={require('../assets/timDoiThu.png')} />
                 </TouchableOpacity>
                 <Image style={styles.notifi} source={require('../assets/notifiTime.png')} />

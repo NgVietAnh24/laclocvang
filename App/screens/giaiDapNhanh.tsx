@@ -3,6 +3,11 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, ActivityIndicator, Ale
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Svg, { Text as SvgText, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
 import { RootStackParamList } from "../types/type";
+import { AppDispatch, RootState } from "../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { listenLixiById } from "../slices/userSlice";
+import { doc, updateDoc } from "firebase/firestore";
+import { firestore } from "../firebase/config";
 
 interface Player {
     id: number;
@@ -21,10 +26,20 @@ interface Question {
 
 type Props = NativeStackScreenProps<RootStackParamList, 'QuickQuiz'>;
 
-const QuickQuiz: React.FC<Props> = ({ navigation }) => {
+const QuickQuiz: React.FC<Props> = ({ navigation, route }) => {
+
+    const randomNames = [
+        "Minh Anh", "Hải Đăng", "Thanh Tâm", "Phương Linh", "Quốc Bảo",
+        "Bảo Ngọc", "Đức Thịnh", "Huy Hoàng", "Khánh Linh", "Trọng Nhân"
+    ];
+
+    const getRandomName = () => {
+        const randomIndex = Math.floor(Math.random() * randomNames.length);
+        return randomNames[randomIndex];
+    };
     const [players, setPlayers] = useState<Player[]>([
         { id: 1, name: "Việt Anh", avatar: require("../assets/player1.png"), score: 0, responseTime: 0 },
-        { id: 2, name: "Nhật Nam", avatar: require("../assets/player2.png"), score: 0, responseTime: 0 }
+        { id: 2, name: getRandomName(), avatar: require("../assets/player2.png"), score: 0, responseTime: 0 }
     ]);
 
     const [questions, setQuestions] = useState<Question[]>([
@@ -34,17 +49,28 @@ const QuickQuiz: React.FC<Props> = ({ navigation }) => {
         { id: 4, question: "Mâm ngũ quả trong ngày Tết thường gồm những loại quả nào sau đây?", options: ["Táo, cam, lê, dưa hấu, nho", "Mãng cầu, dừa, đu đủ, xoài, chuối", "Nhãn, vải, chôm chôm, mận, quýt", "Chuối, dưa hấu, bưởi, mãng cầu, đào"], answer: "Mãng cầu, dừa, đu đủ, xoài, chuối" },
         { id: 5, question: "Người ta thường kiêng kỵ việc gì trong những ngày đầu năm mới?", options: ["Quét nhà", "Đi ra ngoài", "Làm vườn", "Đi chợ"], answer: "Quét nhà" }
     ]);
+    const { userId } = route.params;
 
+
+    const user = useSelector((state: RootState) =>
+        state.users.data.find(user => user.id === userId)
+    );
+
+    const getRandomNumber = (): number => Math.floor(Math.random() * 51);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [gameOver, setGameOver] = useState(false);
-    const [startTime, setStartTime] = useState<number>(0);
-    const [totalTime, setTotalTime] = useState<number>(0);
-
+    const [startTime, setStartTime] = useState<number>(120);
+    const [totalTime, setTotalTime] = useState<number>(4000);
+    const dispatch = useDispatch<AppDispatch>();
+    const lixi = useSelector((state: any) => state.users.lixi);
     useEffect(() => {
-        if (currentQuestionIndex === 0) {
-            setStartTime(Date.now());
-        }
-    }, [currentQuestionIndex]);
+        const unsubscribe = dispatch(listenLixiById(userId));
+
+        return () => {
+            unsubscribe(); // Hủy lắng nghe khi component unmount
+        };
+    }, [dispatch, userId]);
+    const [count, setCount] = useState(lixi);
 
     const handleAnswer = (selectedAnswer: string, playerId: number) => {
         if (gameOver) return;
@@ -66,7 +92,8 @@ const QuickQuiz: React.FC<Props> = ({ navigation }) => {
         }
     };
 
-    const determineWinner = () => {
+
+    const determineWinner = async () => {
         const [player1, player2] = players;
         let winner = null;
 
@@ -78,10 +105,28 @@ const QuickQuiz: React.FC<Props> = ({ navigation }) => {
             winner = player1.responseTime < player2.responseTime ? player1 : player2;
         }
 
-        Alert.alert("Kết quả", `${winner?.name} thắng! Tổng thời gian: ${(totalTime / 1000).toFixed(2)} giây`, [
-            { text: "OK", onPress: () => navigation.goBack() }
-        ]);
+        // Cộng thêm 5 lì xì cho người chiến thắng
+        if (winner) {
+            try {
+                const newLixi = count + 5;
+                setCount(newLixi);
+
+                const userRef = doc(firestore, "users", userId);
+                await updateDoc(userRef, { lixi: newLixi });
+
+                console.log(`Cập nhật lì xì thành công! Tổng lì xì: ${newLixi}`);
+            } catch (error) {
+                console.error("Lỗi khi cập nhật lì xì:", error);
+            }
+        }
+
+        Alert.alert(
+            "Kết quả",
+            `${winner?.name} thắng! Tổng thời gian: ${(totalTime / 1000).toFixed(2)} giây`,
+            [{ text: "OK", onPress: () => navigation.goBack() }]
+        );
     };
+
 
     return (
         <View style={styles.container}>

@@ -6,8 +6,9 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 type Props = NativeStackScreenProps<RootStackParamList, keyof RootStackParamList>;
 
-const BottomBar: React.FC<Props> = ({ navigation }) => {
+const BottomBar: React.FC<Props> = ({ navigation, route }) => {
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
+    const { userId } = route.params as { userId: string };
 
     // Khôi phục selectedIndex từ AsyncStorage
     useEffect(() => {
@@ -22,8 +23,15 @@ const BottomBar: React.FC<Props> = ({ navigation }) => {
 
     const handlePress = async (index: number, screen: keyof RootStackParamList) => {
         setSelectedIndex(index);
-        await AsyncStorage.setItem("selectedIndex", index.toString()); // Lưu vào AsyncStorage
-        navigation.navigate(screen);
+        await AsyncStorage.setItem("selectedIndex", index.toString());
+
+        if (screen === "TrangLac") {
+            navigation.navigate(screen, { userId }); // Thay "ID_NGUOI_DUNG" bằng giá trị thực tế
+        } else if (screen === "LiXiVang") {
+            navigation.navigate(screen, { userId }); // Thay "ID_NGUOI_DUNG" bằng giá trị thực tế
+        } else {
+            navigation.navigate(screen, { userId });
+        }
     };
 
     return (

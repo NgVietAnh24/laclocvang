@@ -23,13 +23,20 @@ const KhoLoc: React.FC<Props> = ({ navigation, route }) => {
         { id: 1, name: "Phiếu mua hàng " + "\n" + "500K", status: "Chưa nhận", quantity: 5, image: require("../assets/voucher500.png") },
         { id: 2, name: "Phiếu mua hàng " + "\n" + "200K", status: "Chưa nhận", quantity: 4, image: require("../assets/voucher200.png") },
         { id: 3, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: " MB01C" + "\n" + "568356", image: require("../assets/bgLucky.png") },
-        { id: 4, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: "MB01C" + "\n" + "789012", image: require("../assets/bgLucky.png") }, { id: 6, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: " MB01C" + "\n" + "568356", image: require("../assets/bgLucky.png") },
+        { id: 4, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: "MB01C" + "\n" + "789012", image: require("../assets/bgLucky.png") },
+        { id: 6, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: " MB01C" + "\n" + "568356", image: require("../assets/bgLucky.png") },
         { id: 5, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: "MB01C" + "\n" + "789012", image: require("../assets/bgLucky.png") },
+        { id: 7, name: "Phiếu mua hàng " + "\n" + "500K", status: "Chưa nhận", quantity: 5, image: require("../assets/voucher500.png") },
+        { id: 8, name: "Phiếu mua hàng " + "\n" + "200K", status: "Chưa nhận", quantity: 4, image: require("../assets/voucher200.png") },
+        { id: 9, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: " MB01C" + "\n" + "568356", image: require("../assets/bgLucky.png") },
+        { id: 10, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: "MB01C" + "\n" + "789012", image: require("../assets/bgLucky.png") },
+        { id: 11, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: " MB01C" + "\n" + "568356", image: require("../assets/bgLucky.png") },
+        { id: 12, name: "Mã số may mắn", status: "Chưa nhận", quantity: 1, code: "MB01C" + "\n" + "789012", image: require("../assets/bgLucky.png") },
     ]);
 
     const filteredRewards = rewardList.filter(reward => {
         if (selectedTab === "Lắc Lộc Vàng") return true;
-        if (selectedTab === "Lì Xì Vàng") return reward.name != "Mã số may mắn";
+        if (selectedTab === "Lì Xì Vàng") return reward.name != 'Mã số may mắn';
         if (selectedTab === "Mã Số May Mắn") return reward.code;
     });
 

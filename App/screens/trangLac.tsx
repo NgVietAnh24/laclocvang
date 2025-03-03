@@ -14,6 +14,12 @@ import {
 import BottomBar from '../components/bottom-bar';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/type';
+import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { firestore } from '../firebase/config';
+import { fetchLuotLacById } from '../slices/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
+import { addRewardToKhoLoc } from '../slices/khoLocSlice';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'TrangLac'>;
 
@@ -23,37 +29,84 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
         require('../assets/vang.png'),
         require('../assets/nua-chi.png'),
     ];
-
+    const dispatch = useDispatch<AppDispatch>();
     const [count, setCount] = useState(60);
     const [receive, setReceive] = useState(true);
     const [showPopup, setShowPopup] = useState(false);
     const [rewards, setRewards] = useState<string[]>([]);
+    const [names, setNames] = useState<string[]>([]);
     const [randomImages, setRandomImages] = useState<string[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [receivedRewards, setReceivedRewards] = useState<string[]>([]); // Danh sách phần thưởng đã nhận
 
-    // Hàm xử lý khi nhấn nút lắc
-    const handlePress = (num: number) => {
-        if (count < num) {
-            Alert.alert("Hết lượt lắc!", "Bạn không thể lắc thêm.");
-            return;
+    const { userId } = route.params;
+    dispatch(fetchLuotLacById(userId));
+    console.log('userId:', userId);
+    const user = useSelector((state: RootState) =>
+        state.users.data.find(user => user.id === userId)
+    );
+    console.log('Số lượt lắc:', user?.luotLac);
+
+    const handlePress = async (num: number) => {
+        if (!user?.id) return;
+
+        const userRef = doc(firestore, 'users', user.id);
+        try {
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                const userData = userSnap.data();
+                const currentCount = userData.luotLac || 0;
+
+                if (currentCount < num) {
+                    Alert.alert('Hết lượt lắc!', 'Bạn không thể lắc thêm.');
+                    return;
+                }
+
+                // Tạo danh sách phần thưởng
+                const newRewards = Array.from({ length: num }, () => ({
+                    code: `MBAT ${Math.floor(100000 + Math.random() * 900000)}`,
+                    image: images[Math.floor(Math.random() * images.length)],
+                    name: images[Math.floor(Math.random() * images.length)] === images[0] ? '1 Chỉ vàng PNJ 9.999' : 'Nửa chỉ vàng PNJ 9.999',
+                }));
+
+                // Cập nhật UI
+                setRewards(newRewards.map(r => r.code));
+                setRandomImages(newRewards.map(r => r.image));
+                setNames(newRewards.map(r => r.name));
+                setShowPopup(true);
+                setCurrentIndex(0);
+                setCount(currentCount - num);
+
+                Vibration.vibrate(500);
+
+                // Cập nhật số lượt lắc trong Firestore
+                await updateDoc(userRef, { luotLac: currentCount - num });
+
+                // **Sử dụng Redux để thêm phần thưởng vào kho lộc**
+                dispatch(addRewardToKhoLoc(newRewards));
+            }
+        } catch (error) {
+            console.error('Lỗi khi cập nhật lượt lắc:', error);
         }
+    };
 
-        // Tạo danh sách mã số may mắn
-        const newRewards = Array.from({ length: num }, () =>
-            `MBAT ${Math.floor(100000 + Math.random() * 900000)}`
-        );
 
-        // Tạo danh sách hình ảnh ngẫu nhiên tương ứng
-        const newImages = Array.from({ length: num }, () => images[Math.floor(Math.random() * images.length)]);
-
-        setRewards(newRewards); // Cập nhật danh sách mã số may mắn
-        setRandomImages(newImages); // Cập nhật danh sách hình ảnh ngẫu nhiên
-        setShowPopup(true); // Hiển thị popup
-        setCurrentIndex(0); // Đặt phần thưởng đầu tiên
-        setCount(count - num); // Giảm số lượt lắc
-
-        Vibration.vibrate(500); // Rung khi lắc
+    const saveRewardsToFirestore = async (newRewards: string[], newImages: string[], newNames: string[]) => {
+        try {
+            for (let i = 0; i < newRewards.length; i++) {
+                const rewardData = {
+                    name: newNames[i],
+                    code: newRewards[i],
+                    image: newImages[i],
+                    status: "Chưa nhận",
+                };
+                await addDoc(collection(firestore, 'kholoc'), rewardData);
+            }
+            Alert.alert("Thành công", "Phần thưởng đã được lưu vào kho lộc!");
+        } catch (error) {
+            console.error("Error adding document: ", error);
+            Alert.alert("Lỗi", "Không thể lưu phần thưởng vào kho lộc.");
+        }
     };
 
     const btnExit = () => {
@@ -69,7 +122,7 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
         <View style={styles.container}>
             <Image style={styles.background} source={require('../assets/trang-lac.png')} />
             <Text style={styles.paragraph}>
-                Bạn có <Text style={styles.count}>{count}</Text> lượt lắc
+                Bạn có <Text style={styles.count}>{user?.luotLac}</Text> lượt lắc
             </Text>
             <View style={styles.grBtn}>
                 <TouchableOpacity onPress={() => handlePress(1)}>
@@ -113,6 +166,7 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
                                             {randomImages[currentIndex] === images[0]
                                                 ? "1 Chỉ vàng PNJ 9.999"
                                                 : "Nửa chỉ vàng PNJ 9.999"}
+                                            {/* {names} */}
                                         </Text>
                                         <Text style={styles.popupReward}>1 số may mắn</Text>
                                         <View style={{ flexDirection: 'row', marginTop: '8%' }}>
@@ -130,6 +184,7 @@ const TrangLac: React.FC<Props> = ({ navigation, route }) => {
                                             {randomImages[currentIndex] === images[0]
                                                 ? "1 Chỉ vàng PNJ 9.999"
                                                 : "Nửa chỉ vàng PNJ 9.999"}
+                                            {/* {names} */}
                                         </Text>
                                         <Text style={styles.popupReward1}>1 số may mắn</Text>6
                                         <View style={{ flexDirection: 'row', marginTop: '8%' }}>

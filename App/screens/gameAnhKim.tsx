@@ -3,6 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { RootStackParamList } from '../types/type';
 import BottomBar from '../components/bottom-bar';
+import { firestore } from '../firebase/config';
+import { doc, updateDoc } from 'firebase/firestore';
+import { useDispatch, useSelector } from 'react-redux';
+import { listenLixiById } from '../slices/userSlice';
+import { AppDispatch, RootState } from '../store/store';
 
 interface Icon {
     id: number;
@@ -13,11 +18,38 @@ interface Icon {
 type Props = NativeStackScreenProps<RootStackParamList, 'GameAnhKim'>;
 
 const GameAnhKim: React.FC<Props> = ({ navigation, route }) => {
+    const { userId } = route.params;
+
+
+    const user = useSelector((state: RootState) =>
+        state.users.data.find(user => user.id === userId)
+    );
+
+    const getRandomNumber = (): number => Math.floor(Math.random() * 51);
+    const randomNames = [
+        "Minh Anh", "Hải Đăng", "Thanh Tâm", "Phương Linh", "Quốc Bảo",
+        "Bảo Ngọc", "Đức Thịnh", "Huy Hoàng", "Khánh Linh", "Trọng Nhân"
+    ];
+
+    const getRandomName = () => {
+        const randomIndex = Math.floor(Math.random() * randomNames.length);
+        return randomNames[randomIndex];
+    };
     const [isSearching, setIsSearching] = useState(true);
     const [score, setScore] = useState(0);
     const [timeLeft, setTimeLeft] = useState(120); // 2 phút
     const [isGameOver, setIsGameOver] = useState(false);
     const [icons, setIcons] = useState<Icon[]>([]); // Chỉ định kiểu cho icons
+    const dispatch = useDispatch<AppDispatch>();
+    const lixi = useSelector((state: any) => state.users.lixi);
+    useEffect(() => {
+        const unsubscribe = dispatch(listenLixiById(userId));
+
+        return () => {
+            unsubscribe(); // Hủy lắng nghe khi component unmount
+        };
+    }, [dispatch, userId]);
+    const [count, setCount] = useState(lixi);
 
     // Kích thước khu vực hình chữ nhật
     const rectangleWidth = 300; // Chiều rộng
@@ -49,6 +81,14 @@ const GameAnhKim: React.FC<Props> = ({ navigation, route }) => {
     }, [isGameOver]);
 
     useEffect(() => {
+        if (isGameOver && score > 0) {
+            const newLixi = count + 5;
+            setCount(newLixi);
+            updateLiXi(userId, newLixi);
+        }
+    }, [isGameOver]);
+
+    useEffect(() => {
         if (!isGameOver) {
             const generateIcons = () => {
                 const numberOfIcons = Math.floor(Math.random() * 2) + 2; // 2 hoặc 3 icon
@@ -66,6 +106,18 @@ const GameAnhKim: React.FC<Props> = ({ navigation, route }) => {
             return () => clearInterval(iconInterval);
         }
     }, [isGameOver]);
+
+    const updateLiXi = async (userId: string, newLixi: number) => {
+        try {
+            const userRef = doc(firestore, "users", userId);
+            await updateDoc(userRef, { lixi: newLixi });
+
+            console.log(`Cập nhật lì xì thành công! Tổng lì xì: ${newLixi}`);
+        } catch (error) {
+            console.error("Lỗi khi cập nhật lì xì:", error);
+        }
+    };
+
 
     const handlePress = (id: number) => {
         if (!isGameOver) {
@@ -103,7 +155,7 @@ const GameAnhKim: React.FC<Props> = ({ navigation, route }) => {
 
                     {isGameOver && (
                         <Text style={styles.winner}>
-                            {score > 0 ? `Bạn đã thắng! Điểm của bạn: ${score} ${"\n"}Nhận được 5 lì xì ` : 'Bạn đã thua cuộc!'}
+                            {score > getRandomNumber() ? `Bạn đã thắng! Điểm của bạn: ${score} ${"\n"}Nhận được 5 lì xì ` : 'Bạn đã thua cuộc!'}
                         </Text>
                     )}
                     <View style={styles.iconContainer}>
@@ -127,8 +179,8 @@ const GameAnhKim: React.FC<Props> = ({ navigation, route }) => {
                         <Image style={styles.vs} source={require('../assets/vs.png')} />
                         <View style={styles.opponent}>
                             <Image style={styles.avatar} source={require('../assets/player02.png')} />
-                            <Text style={styles.opponentName}>Tuấn Anh</Text>
-                            <Text style={styles.opponentScore1}>0</Text>
+                            <Text style={styles.opponentName}>{getRandomName()}</Text>
+                            <Text style={styles.opponentScore1}>{timeLeft === 0 ? getRandomNumber() : 0}</Text>
                         </View>
                     </View>
                 </>
